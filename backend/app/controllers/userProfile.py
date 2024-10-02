@@ -3,13 +3,21 @@ from ..common.customResponse import MakeResponse
 from ..modules.authViews import C_APIView,APIView
 from rest_framework.authentication import TokenAuthentication
 from django.http import HttpRequest,HttpResponse
-from ..serializers.userProfileSerializer import UserProfileCreationSerializer
+from ..serializers.userProfileSerializer import UserProfileCreationSerializer,UserProfileViewSerializer
 from rest_framework.serializers import Serializer
 from ..models.userProfile import UserProfile
 from django.db import transaction
 class UserProfileController(C_APIView):
     protected = False
 
+
+    def get(self,request: HttpRequest,*args:list , **kwargs: dict) -> HttpRequest:
+        obj:UserProfile =  UserProfile.objects.get(user = request.user)
+        context:dict = {
+            "request":request
+        }
+        serializer:Serializer = UserProfileViewSerializer(obj,context = context)
+        return MakeResponse(data = serializer.data)
 
     @transaction.atomic
     def post(self,request:HttpRequest,*args:list,**kwargs: dict) -> HttpResponse:

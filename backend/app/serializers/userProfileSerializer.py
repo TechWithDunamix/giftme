@@ -2,6 +2,7 @@ from rest_framework import serializers
 from ..models.userProfile import UserProfile 
 from typing import Any
 from .bases import MainUserDataSerializer
+from django.http import HttpRequest
 class UserProfileCreationSerializer(serializers.Serializer):
     bio:str = serializers.CharField(required = False)
 
@@ -28,8 +29,19 @@ class UserProfileViewSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        user_data = MainUserDataSerializer(instance.user).data
+    
 
+
+    def to_representation(self, instance):
+        
+        data:dict = super().to_representation(instance)
+        request:HttpRequest = self.context.get("request")
+        profile_image :str =   request.build_absolute_uri(instance.profile_image.url)
+        cover_image :str =   request.build_absolute_uri(instance.cover_image.url)
+
+        data.setdefault("profile_image",profile_image)
+        data.setdefault("cover_image",cover_image)
+    
+        user_data = MainUserDataSerializer(instance.user).data
+        
         return {**data,**user_data}
