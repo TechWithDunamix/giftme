@@ -37,3 +37,5 @@ class UserProfile(models.Model):
     
 
 
+    class Meta:
+        db_table = "User Profile"
