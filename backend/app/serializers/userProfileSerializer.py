@@ -6,7 +6,7 @@ from django.http import HttpRequest
 class UserProfileCreationSerializer(serializers.Serializer):
     bio:str = serializers.CharField(required = False)
 
-    interest:list = serializers.ListField(
+    interests:list = serializers.ListField(
         child = serializers.CharField(required = False),
         required = False
     )
@@ -27,21 +27,51 @@ class UserProfileViewSerializer(serializers.ModelSerializer):
         model = UserProfile  
 
         fields = "__all__"
-
-
-    
-
-
     def to_representation(self, instance):
-        
+
         data:dict = super().to_representation(instance)
         request:HttpRequest = self.context.get("request")
-        profile_image :str =   request.build_absolute_uri(instance.profile_image.url)
-        cover_image :str =   request.build_absolute_uri(instance.cover_image.url)
+        if  request:
+            
+            profile_image :str =   request.build_absolute_uri(instance.profile_image.url)
+            cover_image :str =   request.build_absolute_uri(instance.cover_image.url)
 
-        data.setdefault("profile_image",profile_image)
-        data.setdefault("cover_image",cover_image)
+            data.setdefault("profile_image",profile_image)
+            data.setdefault("cover_image",cover_image)
     
         user_data = MainUserDataSerializer(instance.user).data
         
         return {**data,**user_data}
+
+
+
+class UserProfileUpdateSerializer(serializers.Serializer):
+    email  :str = serializers.EmailField(required = False)
+    first_name:str = serializers.CharField(required = False)
+    last_name :str = serializers.CharField(required = False)
+    bio:str = serializers.CharField(required = False)
+
+    interests:list = serializers.ListField(
+        child = serializers.CharField(required = False),
+        required = False
+    )
+
+    profile_image:Any = serializers.ImageField(required = False)
+    cover_image  :Any = serializers.ImageField(required = False)
+
+    socials  :list = serializers.ListField(
+        child = serializers.CharField(required = False),
+        required = False
+    )
+
+
+    username  :str = serializers.CharField(required = False)
+
+
+
+
+
+    
+
+
+   
