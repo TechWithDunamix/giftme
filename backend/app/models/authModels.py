@@ -31,6 +31,8 @@ class AuthUserModel(AbstractBaseUser):
 
     last_updated:Union[str,datetime] = models.DateTimeField(auto_now_add=True)
 
+
+    country:str = models.CharField(max_length=230,default="Nigeria")
     is_active:bool = models.BooleanField(default=True)
 
     USERNAME_FIELD:str = "email"

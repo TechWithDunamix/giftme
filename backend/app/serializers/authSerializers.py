@@ -1,12 +1,29 @@
 from rest_framework import serializers
 from ..models.authModels import AuthUserModel
-class UserSignupSerializer(serializers.ModelSerializer):
+from rest_framework.exceptions import ValidationError
+class UserSignupSerializer(serializers.Serializer):
 
-    class Meta:
-        model = AuthUserModel 
+    email:str = serializers.EmailField()
 
-        fields = ["email","first_name","last_name","username","password"]
-        
+    password:str = serializers.CharField()
+
+    first_name:str = serializers.CharField()
+
+    last_name:str = serializers.CharField()
+
+    country:str = serializers.CharField()
+
+    username:str = serializers.CharField()
+
+    def validate_email(self, value: str):
+        if AuthUserModel.objects.filter(email = value).exists():
+            raise serializers.ValidationError("User with this email already exists")
+        return value
+
+    def validate_username(self, value: str):
+        if AuthUserModel.objects.filter(username = value).exists():
+            raise serializers.ValidationError("User with this username already exists")
+        return value
 
 
 class UserLoginSerializer(serializers.Serializer):
