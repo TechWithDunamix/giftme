@@ -3,11 +3,19 @@ from typing import Iterable, Union,List
 from .authModels import AuthUserModel
 from django.db import transaction
 from .bases import C_BaseModels
+from ..common.managers import ProductListManager
+from django.db.models import Manager
+
 
 class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
 
 class ProductList(C_BaseModels):
+
+    objects:Manager = ProductListManager()
+    
+    user :AuthUserModel = models.ForeignKey(AuthUserModel,related_name="user_products",on_delete=models.CASCADE,null=True)
+
     name:str = models.CharField(max_length=150)
 
     description:str = models.TextField()
@@ -37,3 +45,7 @@ class ProductList(C_BaseModels):
          self.price = float(self.price)
          
          return super().save(**kwargs)
+    
+    class Meta:
+         ordering = ["-date_created"]
+         db_table = "Product"

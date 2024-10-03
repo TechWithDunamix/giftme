@@ -1,5 +1,6 @@
 from rest_framework import serializers 
 from typing import Union,List
+from ..models.userProducts import ProductList
 class UserProductCrationSerializer(serializers.Serializer):
     DEFAULT_SETTING:dict = {
         "quantity" : 100,
@@ -26,3 +27,19 @@ class UserProductCrationSerializer(serializers.Serializer):
     setting : dict =serializers.JSONField(default = DEFAULT_SETTING)
 
     draft : bool = serializers.BooleanField(default = False)
+
+
+class UserProductListViewSerializer(serializers.ModelSerializer):
+    caterories  :object = serializers.SerializerMethodField()
+    class Meta:
+        model = ProductList
+        fields:list = ["id",'name',"caterories", 'description', 'price', 'image', 'confirmation_massage', 'setting', 'draft']
+
+
+
+
+    
+    def get_caterories(self,obj):
+        return [x.name for x in obj.category.all()]
+    
+
