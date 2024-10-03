@@ -35,5 +35,5 @@ class ProductList(C_BaseModels):
     def save(self, **kwargs:dict) -> None:
          self.name = self.name.upper()
          self.price = float(self.price)
-         print(**kwargs)
-        #  return super().save(**kwargs)
+         
+         return super().save(**kwargs)

@@ -21,14 +21,14 @@ class UserProductListController(C_APIView):
       
         productData.setdefault("image",request.FILES.get("image"))
 
-        print(type(serializer.data.get("category")[0]))
-        print(serializer.data.get("category")[0])
-
         
-        # categoryJSON:json.JSONDecoder = json.loads(serializer.data.get("category")[0])
-        # category:Category = [Category.objects.get_or_createreate(name = names) for names in categoryJSON]
-        # print(category)
-        # print(productData)
+        
+
+        categoryJSON:json.JSONDecoder = json.loads(serializer.data.get("category")[0])
+        category:Category = [Category.objects.get_or_create(name = names)[0] for names in categoryJSON]
+
+        product:ProductList = ProductList.objects.create(**productData)
+        product.category.set(category)
         return MakeResponse({"success":"Product added success"})
     
 
