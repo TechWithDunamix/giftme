@@ -7,6 +7,7 @@ from ..models.userProducts import ProductList,Category
 import json
 from django.db import transaction
 from django.db.models import QuerySet
+from django.shortcuts import get_object_or_404
 class UserProductListController(C_APIView):
     def get(self,request:HttpRequest,id = None,*args :list, **kwargs :dict) ->HttpResponse:
         draft :bool = request.GET.get("draft")
@@ -15,6 +16,15 @@ class UserProductListController(C_APIView):
                                  .prefetch_related("category").all()
         
         serializer :Serializer = UserProductListViewSerializer(querySetList,many = True)
+        if id:
+            querySetList :QuerySet = get_object_or_404(
+                ProductList.objects.filter(user = request.user),
+                id = id
+            )
+
+            serializer :Serializer = UserProductListViewSerializer(querySetList)
+
+
         return MakeResponse(serializer.data)
     @transaction.atomic
     def post(self, request:HttpRequest, *args: list,**kwargs:dict) ->HttpResponse:
