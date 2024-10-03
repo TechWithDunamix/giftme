@@ -2,11 +2,12 @@ from django.db import models
 from typing import Iterable, Union,List
 from .authModels import AuthUserModel
 from django.db import transaction
+from .bases import C_BaseModels
 
-class Category(models.Model):
+class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
 
-class ProductList(models.Model):
+class ProductList(C_BaseModels):
     name:str = models.CharField(max_length=150)
 
     description:str = models.TextField()
@@ -32,4 +33,7 @@ class ProductList(models.Model):
     
     @transaction.atomic
     def save(self, **kwargs:dict) -> None:
-         return super().save(**kwargs)
+         self.name = self.name.upper()
+         self.price = float(self.price)
+         print(**kwargs)
+        #  return super().save(**kwargs)
