@@ -1,8 +1,12 @@
 from rest_framework.response import Response 
 from typing import Union,Optional
+from rest_framework.pagination import PageNumberPagination
+from django.http import HttpRequest
 class MakeResponse(Response):
 
-    def __init__(self, data=None,message = None, status=200, template_name=None, headers=None, exception=False, content_type=None):
+    def __init__(self, data=None,message = None,paginate:bool = False,page_congig :dict={}, status=200, template_name=None, headers=None, exception=False, content_type=None):
+
+
 
         
         success_status:dict = {
@@ -31,3 +35,6 @@ class MakeResponse(Response):
         }
         
         super().__init__(responseData, status, template_name, headers, exception, content_type)
+
+
+    

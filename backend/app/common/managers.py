@@ -41,9 +41,11 @@ class UserManager(BaseUserManager):
 
 
 class ProductListManager(Manager):
-    def filter(self, *args: Any, **kwargs: Any):
-        print(kwargs.get("draft"))
+    def filter_draft(self, *args: Any, **kwargs: Any):
+
+        
         if not kwargs.get("draft"):
+            del kwargs['draft']
             return super().filter(*args, **kwargs)
 
         options :list = ['true','false']

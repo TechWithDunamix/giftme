@@ -77,13 +77,13 @@
             formdata.append("draft", document.getElementById("draft").checked);
 
             const requestOptions = {
-                method: "POST",
+                method: "PUT",
                 headers: myHeaders,
                 body: formdata,
                 redirect: "follow"
             };
 
-            fetch("http://localhost:8000/api/v1/user/product/create", requestOptions)
+            fetch("http://127.0.0.1:8011/api/v1/user/product/d890d61b-8fef-40f0-9b78-6f11224b7809", requestOptions)
                 .then((response) => response.text())
                 .then((result) => console.log(result))
                 .catch((error) => console.error(error));
