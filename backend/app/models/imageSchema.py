@@ -1,6 +1,9 @@
+from typing import Iterable
 from .bases import C_BaseModels
 from .authModels import AuthUserModel   
 from django.db import models
+
+from django.db import transaction
 
 class Images(C_BaseModels):
     user :AuthUserModel = models.ForeignKey(AuthUserModel,related_name="user_images",on_delete=models.CASCADE)
@@ -14,3 +17,9 @@ class Images(C_BaseModels):
 
     class Meta:
         db_table = "User Images"
+
+
+    @transaction.atomic
+    def save(self, **kwargs) -> None:
+
+        return super().save(**kwargs)
