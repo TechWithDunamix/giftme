@@ -24,8 +24,10 @@ class UserPostController(C_APIView):
 
             elif getParams.get("published") == "false"  :
                  queryset :Union[PostManager | UserPost]  = UserPost.objects.get_unpublished.filter(user = request.user).all()
-            print(queryset)
-            serializer :Serializer = UserPostListSerializer(queryset ,many = True)
+            context :dict = {
+                "request" : request
+            }
+            serializer :Serializer = UserPostListSerializer(queryset ,many = True,context = context)
 
             return MakeResponse(serializer.data)
 
@@ -45,13 +47,14 @@ class UserPostController(C_APIView):
             if key != "images":
                 postData.setdefault(key,value)
         
-        print(postData)
-        images :list = [Images.objects.create(image = img,user = request.user) for img in request.FILES] if request.FILES else []
-
+        
+        
+        images :list = [Images.objects.create(image = request.FILES.get("images_0"),user = request.user)]
+        
         user_post :UserPost = UserPost.objects.create(**postData,user = request.user)
         user_post.images.set(images)
         user_post.save()
-        # print(images)
+        
 
         
         
