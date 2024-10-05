@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.utils import timezone
 from datetime import date
+from ..models.userPosts import UserPost
 class UserPostCreateSerializer(serializers.Serializer):
 
     title :str = serializers.CharField(required = True)
@@ -27,3 +28,10 @@ class UserPostCreateSerializer(serializers.Serializer):
         return value
     
 
+
+class UserPostListSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = UserPost
+        fields = ["title","body","scheduled","scheduled_for","draft","exlusive"]

@@ -4,7 +4,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.http import HttpRequest
 class MakeResponse(Response):
 
-    def __init__(self, data=None,message = None,paginate:bool = False,page_congig :dict={}, status=200, template_name=None, headers=None, exception=False, content_type=None):
+    def __init__(self, data=None,message = None,paginate:bool = False,page_congig :dict={}, status=200, template_name=None, headers=None, exception=False, content_type=None,**kwargs):
 
 
 

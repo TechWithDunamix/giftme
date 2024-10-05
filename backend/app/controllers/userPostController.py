@@ -1,11 +1,34 @@
 from ..modules.authViews import C_APIView
 from django.http import HttpResponse,HttpRequest
-from ..serializers.userPostSerializers import UserPostCreateSerializer
+from ..serializers.userPostSerializers import UserPostCreateSerializer,UserPostListSerializer
 from ..common.customResponse import MakeResponse
 from rest_framework.serializers import Serializer
-from ..models.userPosts import UserPost,Images
+from ..models.userPosts import UserPost,Images,PostManager
+from typing import Union
 from django.db import transaction
 class UserPostController(C_APIView):
+
+
+    def get(self,request :HttpRequest, id = None ,*args :dict, **kwargs : dict) -> HttpResponse:
+        if not id:
+            getParams :dict = request.GET
+
+            queryset :Union[PostManager | UserPost] = UserPost.objects.filter(user = request.user).prefetch_related("images").all()
+
+            if getParams.get("draft"):
+                queryset :Union[PostManager | UserPost] = UserPost.objects.get_draft.filter(user = request.user)
+
+            
+            if getParams.get("published") == "true":
+                 queryset :Union[PostManager | UserPost]  = UserPost.objects.get_published.filter(user = request.user).all()
+
+            elif getParams.get("published") == "false"  :
+                 queryset :Union[PostManager | UserPost]  = UserPost.objects.get_unpublished.filter(user = request.user).all()
+            print(queryset)
+            serializer :Serializer = UserPostListSerializer(queryset ,many = True)
+
+            return MakeResponse(serializer.data)
+
 
     @transaction.atomic
     def post(self, request :HttpRequest, *args :list,**kwargs :dict) ->HttpResponse:

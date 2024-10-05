@@ -1,7 +1,9 @@
 from typing import Any
 from django.db.models import Manager
 from django.contrib.auth.models import BaseUserManager 
-
+from django.db.models import Q,QuerySet
+from django.utils import timezone
+from .querysets import PostListQuerysets
 class UserManager(BaseUserManager):
 
      def create_user(self,email:str, password: str,username:str,last_name:str,first_name: str,country:str) -> object:
@@ -56,3 +58,27 @@ class ProductListManager(Manager):
         kwargs['draft'] = True if kwargs.get("draft") == "true" else False
 
         return super().filter(*args, **kwargs)
+    
+
+class PostManager(Manager):
+
+    def get_queryset(self) -> PostListQuerysets:
+        return PostListQuerysets(self.model,using=self._db)
+    
+
+    @property
+    def get_draft(self) -> QuerySet:
+
+        return self.get_queryset().get_all(draft=True)
+    
+    @property
+    def get_published(self,**kwargs : dict) -> QuerySet:
+
+        return self.get_queryset().get_published(published = True)
+    
+    @property
+    def get_unpublished(self, **kwargs : dict) ->QuerySet:
+        return self.get_queryset().get_published(published = False)
+
+
+    
