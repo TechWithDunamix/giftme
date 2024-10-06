@@ -1,14 +1,18 @@
 from rest_framework.response import Response 
 from typing import Union,Optional
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.serializers import Serializer
 from django.http import HttpRequest
+from django.db.models import QuerySet
+from ..modules.paginator import paginate_qs
 class MakeResponse(Response):
 
-    def __init__(self, data=None,message = None,paginate:bool = False,page_congig :dict={}, status=200, template_name=None, headers=None, exception=False, content_type=None,**kwargs):
+    def __init__(self, data=None,message = None,paginate:bool = False, status=200, template_name=None, headers=None, exception=False, content_type=None,**kwargs):
 
 
-
-        
+        if not data and paginate == False:
+            raise ValueError("You can't turn off paginate with no data ")
+        meta :dict = {}
         success_status:dict = {
                 200: "OK",  # Request succeeded
                 201: "Created",  # Resource successfully created
@@ -26,11 +30,34 @@ class MakeResponse(Response):
 
         else:
             status_string:str = "Error"
+
+        if paginate == True:
+            request :HttpRequest = kwargs.get("request")
+            _Serializer :Serializer = kwargs.get("serializer")
+            queryset :QuerySet = kwargs.get("queryset")
+            _paginator,qs =  paginate_qs(request = request,qs=queryset)
+
+            serializer = _Serializer(qs,many = True,context = {
+                "request" :  request
+            })
+            meta :dict = {
+                'current_page': _paginator.page.number,          
+                'page_size': _paginator.page_size,               
+                'total_items': _paginator.page.paginator.count,  
+                'total_pages': _paginator.page.paginator.num_pages,  
+                'has_next': _paginator.page.has_next(),          
+                'has_previous': _paginator.page.has_previous(),  
+            }
+            data :dict= serializer.data
             
+
         responseData:dict = {
+
             "status":status_string,
             "message":message,
-            "data" : data
+            "data" : data,
+            "meta" : meta
+            
 
         }
         

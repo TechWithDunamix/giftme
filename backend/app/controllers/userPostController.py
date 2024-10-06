@@ -15,6 +15,7 @@ class UserPostController(C_APIView):
 
             queryset :Union[PostManager | UserPost] = UserPost.objects.filter(user = request.user).prefetch_related("images").all()
 
+
             if getParams.get("draft"):
                 queryset :Union[PostManager | UserPost] = UserPost.objects.get_draft.filter(user = request.user)
 
@@ -29,7 +30,12 @@ class UserPostController(C_APIView):
             }
             serializer :Serializer = UserPostListSerializer(queryset ,many = True,context = context)
 
-            return MakeResponse(serializer.data)
+            return MakeResponse(
+                paginate=True,
+                serializer = UserPostListSerializer,
+                queryset = queryset,
+                request = request
+            )
 
 
     @transaction.atomic

@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.forms.models import model_to_dict
 from typing import Any
 from ..modules.paginator import paginate_qs
+from rest_framework.pagination import PageNumberPagination
 class UserProductListController(C_APIView):
     def get(self,request:HttpRequest,id = None,*args :list, **kwargs :dict) ->HttpResponse:
         if not id:
@@ -19,7 +20,17 @@ class UserProductListController(C_APIView):
             querySetList: QuerySet = ProductList.objects.filter_draft(user = request.user,draft = draft) \
                                     .prefetch_related("category").all()
             
-            return paginate_qs(querySetList,UserProductListViewSerializer,request)
+           
+        
+           
+            return MakeResponse(
+                                paginate=True,
+                                
+                                request = request,
+                                serializer = UserProductListViewSerializer,
+                                queryset = querySetList
+                                )
+            
         
         querySetList :QuerySet = get_object_or_404(
             ProductList.objects.filter(user = request.user),
