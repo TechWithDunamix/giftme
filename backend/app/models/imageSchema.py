@@ -23,3 +23,9 @@ class Images(C_BaseModels):
     def save(self, **kwargs) -> None:
 
         return super().save(**kwargs)
+    
+    @transaction.atomic
+    def delete(self,**kwargs) -> tuple[int, dict[str, int]]:
+        if self.image:
+            self.image.delete()
+        return super().delete(**kwargs)
