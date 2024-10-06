@@ -5,7 +5,8 @@ from ..common.customResponse import MakeResponse
 from rest_framework.serializers import Serializer
 from ..models.userPosts import UserPost,Images,PostManager
 from typing import Union
-from django.db import transaction
+from django.db import transaction,models
+from django.shortcuts import get_object_or_404
 class UserPostController(C_APIView):
 
 
@@ -28,7 +29,6 @@ class UserPostController(C_APIView):
             context :dict = {
                 "request" : request
             }
-            serializer :Serializer = UserPostListSerializer(queryset ,many = True,context = context)
 
             return MakeResponse(
                 paginate=True,
@@ -36,6 +36,15 @@ class UserPostController(C_APIView):
                 queryset = queryset,
                 request = request
             )
+        
+        queryset :models.QuerySet = UserPost.objects.filter(user = request.user)
+        obj : UserPost = get_object_or_404(queryset,id = id)
+        serializer :Serializer = UserPostListSerializer(obj ,context = {
+            "request" : request
+        })
+
+        return MakeResponse(serializer.data)
+
 
 
     @transaction.atomic

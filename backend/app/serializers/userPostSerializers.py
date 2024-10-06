@@ -35,7 +35,7 @@ class UserPostListSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     class Meta:
         model = UserPost
-        fields = ["title","body","scheduled","scheduled_for","draft","exlusive","image"]
+        fields = ["id","title","body","scheduled","scheduled_for","draft","exlusive","image"]
 
 
     def get_image(self,instance :UserPost):
