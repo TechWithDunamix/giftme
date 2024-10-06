@@ -91,7 +91,10 @@ class UserPostController(C_APIView):
 
         for key, value in postData.items():
             setattr(obj,key,value)
-
+        if request.FILES.get("images_0"):
+            [x.delete() for x in obj.get_image_list()]
+            images = [Images.objects.create(image = request.FILES.get("images_0"),user = request.user)]
+            obj.images.set(images)
         obj.save()
 
         return MakeResponse({"data" : "data"})
