@@ -11,6 +11,10 @@ class UserGalary(C_BaseModels):
 
     images :Images = models.ManyToManyField(Images,related_name="user_galaries")
 
+    exclusive :bool = models.BooleanField(default=False)
+
+    description :str = models.TextField()
+
 
     def __str__(self) -> str:
         return f'{self.user.username} Galary'
