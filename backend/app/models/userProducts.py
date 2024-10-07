@@ -46,6 +46,11 @@ class ProductList(C_BaseModels):
          
          return super().save(**kwargs)
     
+    @transaction.atomic
+    def delete(self,**kwargs) -> tuple[int, dict[str, int]]:
+         if self.image:
+              self.image.delete()
+         return super().delete(**kwargs)
     class Meta:
          ordering = ["-date_created"]
          db_table = "Product"
