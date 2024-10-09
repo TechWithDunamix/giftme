@@ -26,11 +26,13 @@ class UserMembership(C_BaseModels) :
 
     limit_members :bool = models.BooleanField(default=False)
 
+    full_price :float = models.IntegerField(null=True)
+
     @property
     def get_prices(self) -> Union[list | int]:
 
         if self.full_time:
-            return self.price_per_year
+            return self.full_price
         
         return [self.price_per_month,self.price_per_year]
 
@@ -40,4 +42,7 @@ class UserMembership(C_BaseModels) :
     def maxed_out(self):
         return True if self.limit_members else False
         
+
+    class Meta:
+        db_table = "User Membership !"
 

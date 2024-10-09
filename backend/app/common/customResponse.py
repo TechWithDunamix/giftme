@@ -7,11 +7,11 @@ from django.db.models import QuerySet
 from ..modules.paginator import paginate_qs
 class MakeResponse(Response):
 
-    def __init__(self, data=None,message = None,paginate:bool = False, status=200, template_name=None, headers=None, exception=False, content_type=None,**kwargs):
+    def __init__(self, data=[],message = None,paginate:bool = False, status=200, template_name=None, headers=None, exception=False, content_type=None,**kwargs):
 
 
-        if not data and paginate == False:
-            raise ValueError("You can't turn off paginate with no data ")
+        # if not data and paginate == False:
+        #     raise ValueError("You can't turn off paginate with no data ")
         meta :dict = {}
         success_status:dict = {
                 200: "OK",  # Request succeeded

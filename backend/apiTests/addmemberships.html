@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Membership</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120vh;
+        }
+
+        .container {
+            width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="checkbox"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            border: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #responseMessage {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create New Membership</h2>
+        <form id="membershipForm">
+            <div class="form-group">
+                <label for="name">Membership Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Membership Image</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="rewards">Rewards (Comma-separated)</label>
+                <input type="text" id="rewards" name="rewards" placeholder="Reward1, Reward2, ...">
+            </div>
+
+            <div class="form-group">
+                <label for="welcome_note">Welcome Note</label>
+                <textarea id="welcome_note" name="welcome_note" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="price_per_month">Price per Month ($)</label>
+                <input type="number" step="0.01" id="price_per_month" name="price_per_month" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price_per_year">Price per Year ($)</label>
+                <input type="number" step="0.01" id="price_per_year" name="price_per_year" required>
+            </div>
+
+            <div class="form-group">
+                <label for="full_time">Full-time Membership</label>
+                <input type="checkbox" id="full_time" name="full_time">
+            </div>
+
+            <div class="form-group">
+                <label for="max_members">Max Members</label>
+                <input type="number" id="max_members" name="max_members" value="1000" required>
+            </div>
+
+            <div class="form-group">
+                <label for="limit_members">Limit Membership</label>
+                <input type="checkbox" id="limit_members" name="limit_members">
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="responseMessage"></div>
+    </div>
+
+    <script>
+        document.getElementById('membershipForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = new FormData();
+            const name = document.getElementById('name').value;
+            const image = document.getElementById('image').files[0];
+            const rewards = document.getElementById('rewards').value.split(',');
+            const welcome_note = document.getElementById('welcome_note').value;
+            const description = document.getElementById('description').value;
+            const price_per_month = document.getElementById('price_per_month').value;
+            const price_per_year = document.getElementById('price_per_year').value;
+            const full_time = document.getElementById('full_time').checked;
+            const max_members = document.getElementById('max_members').value;
+            const limit_members = document.getElementById('limit_members').checked;
+
+            // Append fields to FormData
+            formData.append('name', name);
+            formData.append('welcome_note', welcome_note);
+            formData.append('description', description);
+            formData.append('price_per_month', price_per_month);
+            formData.append('price_per_year', price_per_year);
+            formData.append('full_time', full_time);
+            formData.append('max_members', max_members);
+            formData.append('limit_members', limit_members);
+            
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // Append rewards
+            rewards.forEach((reward, index) => {
+                formData.append(`rewards[${index}]`, reward.trim());
+            });
+
+            // Send request via Fetch API
+            fetch('http://127.0.0.1:8000/api/v1/user/memberships/00cd0311-71fa-4662-bff8-3e04f6b0155d', {
+                method: 'PUT',
+                body: formData,
+                headers:{
+                    "Authorization" : "Token e9b79c80574628ebed419a800ee70c1a8d11b68d"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById('responseMessage');
+                    if (data.success) {
+                        responseMessage.textContent = 'Membership created successfully!';
+                        responseMessage.style.color = 'green';
+                    } else {
+                        responseMessage.textContent = 'Error creating membership: ' + JSON.stringify(data);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('responseMessage').textContent = 'Error: ' + error;
+                });
+        });
+    </script>
+</body>
+</html>
