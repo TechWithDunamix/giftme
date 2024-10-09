@@ -1,4 +1,4 @@
-from ..controllers.userProfile import UserProfileController
+from ..controllers.userProfileController import UserProfileController
 
 from django.urls import path 
 

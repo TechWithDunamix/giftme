@@ -53,7 +53,9 @@ class UserProfileController(C_APIView):
     @transaction.atomic
     def put(self,request :HttpRequest,*args: list, **kwargs: dict) -> HttpResponse:
 
-        serializer:Serializer = UserProfileUpdateSerializer(data = request.data)
+        serializer:Serializer = UserProfileUpdateSerializer(data = request.data,context= {
+            "request" : request
+        })
 
         if not serializer.is_valid():
             return MakeResponse(data=serializer.errors,status=400)

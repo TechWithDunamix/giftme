@@ -1,10 +1,11 @@
 from rest_framework import serializers 
 from ..models.userProfile import UserProfile 
+from ..models.authModels import AuthUserModel
 from typing import Any
 from .bases import MainUserDataSerializer
 from django.http import HttpRequest
 class UserProfileCreationSerializer(serializers.Serializer):
-    bio:str = serializers.CharField(required = False)
+    bio:str = serializers.CharField(required = True)
 
     interests:list = serializers.ListField(
         child = serializers.CharField(required = False),
@@ -68,6 +69,23 @@ class UserProfileUpdateSerializer(serializers.Serializer):
     username  :str = serializers.CharField(required = False)
 
     paymentDetails :str =serializers.JSONField(required = False)
+
+
+    def validate_email(self, value :str) -> str:
+        request :HttpRequest = self.context.get("request")
+        if AuthUserModel.objects.exclude(email = request.user.email).filter(email = value).exists():
+            raise serializers.ValidationError("User with this email already exists .")
+        
+        return value
+    
+
+    def validate_username(self, value :str) -> str:
+        request :HttpRequest = self.context.get("request")
+        
+        if AuthUserModel.objects.exclude(username = request.user.username).filter(username = value).exists():
+            raise serializers.ValidationError("User with this username already exists .")
+        
+        return value
 
 
 
