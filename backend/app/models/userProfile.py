@@ -15,11 +15,14 @@ class UserProfile(models.Model):
     
     bio:str = models.TextField()
     interests:list = models.JSONField(default=list,null=True)
+
     profile_image:models.ImageField = models.ImageField(upload_to="user_profile",null=True)
+
     cover_image:models.ImageField = models.ImageField(upload_to="cover_images",null=True)
 
     socials:list = models.JSONField(default=list,null=True)
 
+    paymentDetails =models.JSONField(default=dict,null=True)
     def __str__(self) -> str:
         return f'{self.user.username} Profile'
     

@@ -74,7 +74,7 @@ class UserProfileController(C_APIView):
             "profile_image" : request.FILES.get("profile_image",request.user.user_profile.profile_image),
             "cover_image" : request.FILES.get("cover_image",request.user.user_profile.cover_image),
             "socials" : serializer.validated_data.get("socials",request.user.user_profile.interests),
-
+            "paymentDetails" : serializer.validated_data.get("paymentDetails",request.user.user_profile.paymentDetails),
 
         }
 
@@ -89,4 +89,4 @@ class UserProfileController(C_APIView):
         request.user.user_profile.save()
 
 
-        return MakeResponse(serializer.data)
+        return MakeResponse({"update":True})

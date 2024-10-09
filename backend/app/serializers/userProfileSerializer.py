@@ -67,6 +67,8 @@ class UserProfileUpdateSerializer(serializers.Serializer):
 
     username  :str = serializers.CharField(required = False)
 
+    paymentDetails :str =serializers.JSONField(required = False)
+
 
 
 
