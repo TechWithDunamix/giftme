@@ -2,7 +2,7 @@ from typing import Iterable
 from .bases import C_BaseModels
 from .authModels import AuthUserModel   
 from django.db import models
-
+from uuid import uuid4
 from django.db import transaction
 
 class Images(C_BaseModels):
@@ -21,7 +21,7 @@ class Images(C_BaseModels):
 
     @transaction.atomic
     def save(self, **kwargs) -> None:
-
+        self.image.name = f'{uuid4()}.png'
         return super().save(**kwargs)
     
     @transaction.atomic

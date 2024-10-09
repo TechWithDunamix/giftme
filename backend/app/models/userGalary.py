@@ -23,11 +23,17 @@ class UserGalary(C_BaseModels):
 
     @transaction.atomic
     def save(self,**kwargs) -> None:
-
+        
         return super().save(**kwargs)
     
     def get_image_list(self):
         return self.images.all()
+    
+    @transaction.atomic
+    def delete(self, **kwargs) -> tuple[int, dict[str, int]]:
+        [obj.delete for obj in self.get_image_list()]
+        return super().delete(**kwargs)
+    
     
 
     class Meta:
