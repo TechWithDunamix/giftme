@@ -1,7 +1,8 @@
 from .bases import C_BaseModels 
 from django.db import models
-from typing import Union
+from typing import Iterable, Union
 from .authModels import AuthUserModel
+from django.db import transaction
 class UserMembership(C_BaseModels) :
 
     user = models.ForeignKey(AuthUserModel,on_delete=models.CASCADE,related_name="memberships",null = True)
@@ -46,3 +47,13 @@ class UserMembership(C_BaseModels) :
     class Meta:
         db_table = "User Membership !"
 
+
+    @transaction.atomic
+    def save(self, **kwargs):
+        return super().save(**kwargs)
+    
+    @transaction.atomic
+    def delete(self, **kwargs):
+        self.image.delete()
+        return super().delete(**kwargs)
+    
