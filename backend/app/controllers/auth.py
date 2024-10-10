@@ -11,6 +11,10 @@ from ..common.authUtils import AuthenticationCheck
 from ..common import authUtils
 from ..modules.authViews import C_APIView
 from rest_framework.authtoken.models import Token
+from config.settings import SECRET_KEY
+from datetime import datetime,timedelta
+
+import jwt
 auth: AuthenticationCheck = AuthenticationCheck()
 class UserSignin(APIView):
     def create_user(self,**data):
@@ -52,11 +56,20 @@ class UserLogin(APIView):
             return MakeResponse(errors,status=400)
 
         # token:str = authUtils.make_token(user.id)
-        token:Token = Token.objects.get_or_create(user = user)[0]
-        print(token)
+        token = jwt.encode(
+            {
+                "email" : user.email,
+                "user_id" : str(user.id),
+                "exp" : datetime.utcnow() + timedelta(minutes=1),
+                "iat" : datetime.utcnow()
+
+            },
+            key = SECRET_KEY,
+            algorithm="HS256"
+        )
         return MakeResponse({
             "auth" : "Login success",
-            "token":token.key
+            "token":token
         },status=200)
 
         
