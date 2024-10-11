@@ -34,8 +34,8 @@ class UserProfileViewSerializer(serializers.ModelSerializer):
         request:HttpRequest = self.context.get("request")
         if  request:
             
-            profile_image :str =   request.build_absolute_uri(instance.profile_image.url)
-            cover_image :str =   request.build_absolute_uri(instance.cover_image.url)
+            profile_image :str =   request.build_absolute_uri(instance.profile_image.url) if instance.profile_image else ""
+            cover_image :str =   request.build_absolute_uri(instance.cover_image.url) if instance.cover_image else ""
 
             data.setdefault("profile_image",profile_image)
             data.setdefault("cover_image",cover_image)

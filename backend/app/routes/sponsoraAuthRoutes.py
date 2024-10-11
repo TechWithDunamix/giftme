@@ -1,4 +1,4 @@
-from ..controllers.sponsorsControllers import SponsorCreationController,SponsorValidationOTPCntroller
+from ..controllers import SponsorCreationController,SponsorValidationOTPCntroller
 from django.urls import path
 sponsorsRoutes = [
     path("sponsor/create",SponsorCreationController.as_view()),

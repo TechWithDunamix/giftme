@@ -1,17 +1,14 @@
-from ..modules.authViews import C_APIView
-from ..common.customResponse import MakeResponse 
+from ...modules.authViews import C_APIView
+from ...common.customResponse import MakeResponse 
 from django.http import HttpRequest,HttpResponse
-from ..serializers.userProductsSerializers import UserProductCrationSerializer,UserProductListViewSerializer
+from ...serializers.userProductsSerializers import UserProductCrationSerializer,UserProductListViewSerializer
 from rest_framework.serializers import Serializer
-from ..models.userProducts import ProductList,Category
+from ...models.userProducts import ProductList,Category
 import json
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from django.forms.models import model_to_dict
 from typing import Any
-from ..modules.paginator import paginate_qs
-from rest_framework.pagination import PageNumberPagination
 class UserProductListController(C_APIView):
     def get(self,request:HttpRequest,id = None,*args :list, **kwargs :dict) ->HttpResponse:
         if not id:

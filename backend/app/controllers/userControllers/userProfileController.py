@@ -1,14 +1,13 @@
-import json
-from ..common.customResponse import MakeResponse
-from ..modules.authViews import C_APIView,APIView
+from ...common.customResponse import MakeResponse
+from ...modules.authViews import C_APIView,APIView
 from rest_framework.authentication import TokenAuthentication
 from django.http import HttpRequest,HttpResponse
-from ..serializers.userProfileSerializer import (UserProfileCreationSerializer,
+from ...serializers.userProfileSerializer import (UserProfileCreationSerializer,
                                                  UserProfileViewSerializer,
                                                  UserProfileUpdateSerializer)
 from rest_framework.serializers import Serializer
-from ..models.userProfile import UserProfile
-from ..models.authModels import AuthUserModel
+from ...models.userProfile import UserProfile
+from ...models.authModels import AuthUserModel
 from django.db import transaction
 class UserProfileController(C_APIView):
     protected = False

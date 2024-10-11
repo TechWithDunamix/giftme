@@ -1,4 +1,4 @@
-from ..controllers.auth import UserSignin ,UserLogin
+from ..controllers import UserSignin ,UserLogin
 from django.urls import include,path
 authUrls = [
     path("auth/signup",UserSignin.as_view()),

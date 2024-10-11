@@ -1,9 +1,9 @@
-from ..serializers.userGalarySerializers import UserGalaryCreateSerializer,UserGalaryListSerializer,UserGalaryUpdateSerializer
-from ..common.customResponse import MakeResponse 
-from ..modules.authViews import C_APIView
+from ...serializers.userGalarySerializers import UserGalaryCreateSerializer,UserGalaryListSerializer,UserGalaryUpdateSerializer
+from ...common.customResponse import MakeResponse 
+from ...modules.authViews import C_APIView
 from django.http import HttpRequest,HttpResponse
 from rest_framework.serializers import Serializer
-from ..models.userGalary import UserGalary,Images
+from ...models.userGalary import UserGalary,Images
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 class UserGalaryController(C_APIView):

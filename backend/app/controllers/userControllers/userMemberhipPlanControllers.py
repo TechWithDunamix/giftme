@@ -1,8 +1,8 @@
-from ..common.customResponse import MakeResponse
-from ..modules.authViews import C_APIView
+from ...common.customResponse import MakeResponse
+from ...modules.authViews import C_APIView
 from django.http import HttpRequest,HttpResponse
-from ..serializers.userMembershipsSerializers import UserMembershipCreateSerializer,UserMembershipsViewSerializer,UserMembershipUpdateSerializer
-from ..models.userMemberships import UserMembership
+from ...serializers.userMembershipsSerializers import UserMembershipCreateSerializer,UserMembershipsViewSerializer,UserMembershipUpdateSerializer
+from ...models.userMemberships import UserMembership
 from rest_framework.serializers import Serializer
 from django.shortcuts import get_object_or_404
 class UserMembershipPlanController(C_APIView):

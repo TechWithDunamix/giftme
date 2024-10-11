@@ -1,4 +1,4 @@
-from ..controllers.userProductsController import UserProductListController
+from ..controllers import UserProductListController
 from django.urls import path
 
 userProductListRoutes:list = [

@@ -1,4 +1,4 @@
-from ..controllers.userGalaryController import UserGalaryController
+from ..controllers import UserGalaryController
 from django.urls import path
 
 userGalaryRoutes = [
