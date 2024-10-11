@@ -4,11 +4,13 @@ from .userProductRoutes import userProductListRoutes
 from .userPostsRoutes import userPostRoutes
 from .userGalaryRoutes import userGalaryRoutes
 from .userMembershipPlansRoutes import usermembershipsroutes
+from .sponsoraAuthRoutes import sponsorsRoutes
 urlpatterns = [
     *authUrls,
     *user_profile_routes,
     *userProductListRoutes,
     *userPostRoutes,
     *userGalaryRoutes,
-    *usermembershipsroutes
+    *usermembershipsroutes,
+    *sponsorsRoutes
 ]

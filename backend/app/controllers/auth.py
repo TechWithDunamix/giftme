@@ -60,7 +60,7 @@ class UserLogin(APIView):
             {
                 "email" : user.email,
                 "user_id" : str(user.id),
-                "exp" : datetime.utcnow() + timedelta(minutes=1),
+                "exp" : datetime.utcnow() + timedelta(minutes=3600),
                 "iat" : datetime.utcnow()
 
             },
