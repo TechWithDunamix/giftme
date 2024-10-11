@@ -5,6 +5,7 @@ from .userPostsRoutes import userPostRoutes
 from .userGalaryRoutes import userGalaryRoutes
 from .userMembershipPlansRoutes import usermembershipsroutes
 from .sponsoraAuthRoutes import sponsorsRoutes
+from .sponsorFeedsRoutes import sponsors_feeds_routes
 urlpatterns = [
     *authUrls,
     *user_profile_routes,
@@ -12,5 +13,6 @@ urlpatterns = [
     *userPostRoutes,
     *userGalaryRoutes,
     *usermembershipsroutes,
-    *sponsorsRoutes
+    *sponsorsRoutes,
+    *sponsors_feeds_routes
 ]

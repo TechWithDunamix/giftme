@@ -18,6 +18,8 @@ class Sponsors(C_BaseModels):
     otp_created :models.DateField = models.DateField(auto_now_add=True)
 
     username :str = models.CharField(max_length=120, unique=True)
+
+    is_authenticated :bool = models.BooleanField(default=True)
     class Meta:
         db_table = "Sponsors"
 
@@ -29,6 +31,7 @@ class Sponsors(C_BaseModels):
     
     @transaction.atomic
     def save(self, **kwargs):
+        self.username = self.email.split("@")[0]
 
         return super().save(**kwargs)
     
@@ -44,18 +47,19 @@ class Sponsors(C_BaseModels):
             if  _obj.first().date_created + timedelta(minutes=90) < timezone.now():
                 obj = _obj.first()
                 
-                obj.username = obj.email.split("@")[0]
                 obj.otp = obj.generate_otp()
                 obj.date_created = timezone.now()
                 obj.save()
                 
                 return obj
-            
-            
-
             return _obj.first()
+            
+        obj = cls.objects.create(email = email)
+        obj.otp = obj.generate_otp()
+        obj.save()
+        return obj 
         
-        return cls.objects.create(email = email)
+        
             
 
         
