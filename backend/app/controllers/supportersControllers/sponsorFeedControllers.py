@@ -6,8 +6,8 @@ from rest_framework.decorators import authentication_classes,permission_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from ...models.userPosts import UserPost,models
 from django.utils import timezone
-
-
+from ...serializers.sponsorsFeedSerializers import SponsorsPostFeedListSerializer
+from rest_framework.serializers import Serializer
 class SponsorFeedController(APIView):
     
     authentication_classes = [C_JWT_SponsorAuthentication]
@@ -20,6 +20,18 @@ class SponsorFeedController(APIView):
                 models.Q(draft = False) & models.Q(scheduled = False),
                 models.Q(scheduled_for__lt = timezone.now())
             ]
-            queryset = UserPost.objects.filter(*queries)
+            queryset = UserPost.objects.filter(*queries).select_related("user").prefetch_related("images")
             
-        return MakeResponse({"success" : True})
+        response = MakeResponse(
+            request = request,
+            paginate=True,
+            serializer = SponsorsPostFeedListSerializer,
+            queryset = queryset
+
+            )
+        config = {
+            "httponly" : True
+        }
+        response.set_cookie("email",request.user.email,**config)
+        
+        return response

@@ -25,7 +25,6 @@ class SponsorCreationController(APIView):
         email :str = serializer.validated_data.get("email")
         sponsor :Sponsors  = Sponsors.get_or_create(email = email)
         print(sponsor.otp)
-        print(sponsor.otp)
 
 
         return MakeResponse({"created" :True}, status=201)

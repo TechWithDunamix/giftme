@@ -26,7 +26,6 @@ class UserSignin(APIView):
         
         if not serializer.is_valid():
             return MakeResponse(serializer.errors,status=400)
-        print(serializer.data)
         user = self.create_user(**serializer.validated_data)
         
         return  MakeResponse(serializer.data,message="User registered success !")

@@ -83,7 +83,6 @@ class UserGalaryController(C_APIView):
 
             
         }
-        print(data)
         for key,value in data.items():
             setattr(obj,key,value)
         if len(request.FILES) > 0:
