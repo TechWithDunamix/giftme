@@ -13,3 +13,5 @@ from .userGalary import UserGalary
 from .userMemberships import UserMembership
 
 from .sponsors import Sponsors
+
+from .userMembers import UserMembers

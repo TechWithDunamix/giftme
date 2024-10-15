@@ -29,6 +29,8 @@ class UserMembership(C_BaseModels) :
 
     full_price :float = models.IntegerField(null=True)
 
+    
+
     @property
     def get_prices(self) -> Union[list | int]:
 
