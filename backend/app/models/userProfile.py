@@ -20,7 +20,7 @@ class UserProfile(models.Model):
 
     cover_image:models.ImageField = models.ImageField(upload_to="cover_images",null=True)
 
-    socials:list = models.JSONField(default=list,null=True)
+    socials:dict = models.JSONField(default=dict,null=True)
 
     paymentDetails =models.JSONField(default=dict,null=True)
     def __str__(self) -> str:

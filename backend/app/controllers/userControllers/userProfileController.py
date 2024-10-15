@@ -78,7 +78,7 @@ class UserProfileController(C_APIView):
             "paymentDetails" : serializer.validated_data.get("paymentDetails",request.user.user_profile.paymentDetails),
 
         }
-
+        print(request.FILES)
         for key,value in userData.items():
             setattr(request.user,key,value)
 

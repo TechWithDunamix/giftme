@@ -60,10 +60,7 @@ class UserProfileUpdateSerializer(serializers.Serializer):
     profile_image:Any = serializers.ImageField(required = False)
     cover_image  :Any = serializers.ImageField(required = False)
 
-    socials  :list = serializers.ListField(
-        child = serializers.CharField(required = False),
-        required = False
-    )
+    socials  :dict = serializers.JSONField(required = False)
 
 
     username  :str = serializers.CharField(required = False)
