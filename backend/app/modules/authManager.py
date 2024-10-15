@@ -79,8 +79,11 @@ class C_JWT_SponsorAuthentication(BaseAuthentication):
         
         try:
             user = Sponsors.objects.get(id = payload['user_id'])
-
+        
         except Sponsors.DoesNotExist:
+            user = AuthUserModel.objects.get(id = payload['user_id'])
+        except (Sponsors.DoesNotExist, AuthUserModel.DoesNotExist):
+
             raise AuthenticationFailed("User Not FOund")
         
         return (user, None)

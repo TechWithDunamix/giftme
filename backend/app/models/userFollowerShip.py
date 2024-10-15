@@ -8,6 +8,6 @@ class Followership(C_BaseModels):
 
     user = models.ForeignKey(AuthUserModel,related_name="followers",on_delete=models.CASCADE)
 
-    sponsors = models.ForeignKey(Sponsors,on_delete=models.CASCADE,related_name="following")
+    sponsor = models.ForeignKey(Sponsors,on_delete=models.CASCADE,related_name="following")
 
     
