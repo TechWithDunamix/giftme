@@ -8,7 +8,7 @@ class SponsorsPostFeedListSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPost
 
-        fields = ["title","date_created","id","exlusive", "image", "user"]
+        fields = ["id","title","date_created","id","exlusive", "image", "user"]
 
 
     def get_image(self,instance :UserPost):

@@ -8,30 +8,34 @@ from ...models.userPosts import UserPost,models
 from django.utils import timezone
 from ...serializers.sponsorsFeedSerializers import SponsorsPostFeedListSerializer
 from rest_framework.serializers import Serializer
-class SponsorFeedController(APIView):
+from django.shortcuts import get_object_or_404
+class FeedsController(APIView):
     
     authentication_classes = [C_JWT_SponsorAuthentication]
     permission_classes = [AllowAny]
 
 
     def get(self , request :HttpRequest, id = None, *args : list, **kwargs : dict) -> HttpResponse:
-        if not id:
-            queries :list = [
+        queries :list = [
                 models.Q(draft = False) & models.Q(scheduled = False),
                 models.Q(scheduled_for__lt = timezone.now())
             ]
-            queryset = UserPost.objects.filter(*queries).select_related("user").prefetch_related("images")
-            
-        response = MakeResponse(
-            request = request,
-            paginate=True,
-            serializer = SponsorsPostFeedListSerializer,
-            queryset = queryset
+        queryset = UserPost.objects.filter(*queries).select_related("user").prefetch_related("images")
+        if not id:
+            response = MakeResponse(
+                request = request,
+                paginate=True,
+                serializer = SponsorsPostFeedListSerializer,
+                queryset = queryset
 
-            )
-        config = {
-            "httponly" : True
-        }
-        response.set_cookie("email",request.user.email,**config)
-        
-        return response
+                )
+            
+            return response
+
+        obj :UserPost = get_object_or_404(queryset, id= id)
+        serializer :Serializer =  SponsorsPostFeedListSerializer(obj,context = {
+                                                        "request" : request
+                                                        })
+        return MakeResponse(
+           serializer.data
+        )

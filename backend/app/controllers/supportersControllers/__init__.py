@@ -1,2 +1,2 @@
 from .sponsorsAuthControllers import SponsorCreationController,SponsorValidationOTPCntroller
-from .sponsorFeedControllers import SponsorFeedController
+from .sponsorFeedControllers import FeedsController

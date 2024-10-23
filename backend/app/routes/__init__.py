@@ -8,6 +8,8 @@ from .sponsoraAuthRoutes import sponsorsRoutes
 from .sponsorFeedsRoutes import sponsors_feeds_routes
 from .sponsorsUsersViewRoutes import sponsorUserListRoues
 from .userFollwingRoutes  import user_following_routes
+from .sponsorsMembershipRoutes import sponsors_membership_routes
+from .commentsRoutes import comment_routes
 urlpatterns = [
     *authUrls,
     *user_profile_routes,
@@ -18,5 +20,7 @@ urlpatterns = [
     *sponsorsRoutes,
     *sponsors_feeds_routes,
     *sponsorUserListRoues,
-    *user_following_routes
+    *user_following_routes,
+    *sponsors_membership_routes,
+    *comment_routes
 ]

@@ -17,3 +17,7 @@ from .sponsors import Sponsors
 from .userMembers import UserMembers
 
 from .userFollowerShip import Followership
+
+from .payments import Payments
+
+from .comments import Comment

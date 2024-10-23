@@ -64,8 +64,7 @@ class UserPostController(C_APIView):
                 postData.setdefault(key,value)
         
         
-        
-        images :list = [Images.objects.create(image = request.FILES.get("images_0"),user = request.user)]
+        images :list = [Images.objects.create(image = request.FILES.get("image"),user = request.user)]
         
         user_post :UserPost = UserPost.objects.create(**postData,user = request.user)
         user_post.images.set(images)
