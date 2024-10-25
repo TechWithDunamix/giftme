@@ -52,3 +52,6 @@ class AuthUserModel(AbstractBaseUser):
     class Meta:
         db_table:str = 'Users'
         app_label:str = "app"
+
+
+

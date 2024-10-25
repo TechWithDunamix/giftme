@@ -10,6 +10,7 @@ from .sponsorsUsersViewRoutes import sponsorUserListRoues
 from .userFollwingRoutes  import user_following_routes
 from .sponsorsMembershipRoutes import sponsors_membership_routes
 from .commentsRoutes import comment_routes
+from .reactionRoutes import reaction_routes
 urlpatterns = [
     *authUrls,
     *user_profile_routes,
@@ -22,5 +23,6 @@ urlpatterns = [
     *sponsorUserListRoues,
     *user_following_routes,
     *sponsors_membership_routes,
-    *comment_routes
+    *comment_routes,
+    *reaction_routes
 ]

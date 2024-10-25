@@ -21,3 +21,5 @@ from .userFollowerShip import Followership
 from .payments import Payments
 
 from .comments import Comment
+
+from .reaction import Reaction
