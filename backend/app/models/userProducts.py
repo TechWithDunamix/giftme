@@ -5,6 +5,8 @@ from django.db import transaction
 from .bases import C_BaseModels
 from ..common.managers import ProductListManager
 from django.db.models import Manager
+from .sponsors import Sponsors
+from django.utils import timezone
 
 
 class Category(C_BaseModels):
@@ -54,3 +56,39 @@ class ProductList(C_BaseModels):
     class Meta:
          ordering = ["-date_created"]
          db_table = "Product"
+
+
+class ProductSales(C_BaseModels):
+
+    product = models.ForeignKey(ProductList, related_name="sales", on_delete = models.CASCADE)
+    sponsor  = models.ForeignKey(Sponsors, related_name="buys", on_delete = models.CASCADE)
+
+    @transaction.atomic
+    def save(self, **kwargs :dict) -> None:
+        return super().save(**kwargs)
+    
+
+class ProductDiscount(C_BaseModels):
+     
+     title :str = models.CharField(max_length=120)
+
+     percentage_or_price :Union[int, float] = models.FloatField()
+
+     starting = models.DateTimeField(default=timezone.now())
+
+     ending = models.DateTimeField(null=True)
+
+     products :ProductList = models.ManyToManyField(ProductList, related_name = "discounts")
+
+     limit_quantity:bool = models.BooleanField(default=False)
+
+     max_quantity :Union[int, float]  = models.PositiveSmallIntegerField(null=True)
+
+     discount_type :str = mo
+     @transaction.atomic
+     def save(self, **kwargs :dict) -> None:
+        return super().save(**kwargs)
+
+
+     
+     

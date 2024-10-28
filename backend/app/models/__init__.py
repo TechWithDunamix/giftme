@@ -2,7 +2,7 @@ from .authModels import AuthUserModel
 
 from .userProfile import UserProfile
 
-from .userProducts import ProductList,Category
+from .userProducts import ProductList,Category,ProductSales
 
 from .userPosts import UserPost
 
@@ -23,3 +23,4 @@ from .payments import Payments
 from .comments import Comment
 
 from .reaction import Reaction
+
