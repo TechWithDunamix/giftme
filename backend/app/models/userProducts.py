@@ -7,7 +7,7 @@ from ..common.managers import ProductListManager
 from django.db.models import Manager
 from .sponsors import Sponsors
 from django.utils import timezone
-
+from django.core.exceptions import ValidationError
 
 class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
@@ -84,7 +84,28 @@ class ProductDiscount(C_BaseModels):
 
      max_quantity :Union[int, float]  = models.PositiveSmallIntegerField(null=True)
 
-     discount_type :str = mo
+     discount_type :str = models.CharField(max_length = 250, default="percentage")
+
+     def clean(self) -> None:
+        
+        if self.discount_type not in ["percentage","price"]:
+             raise ValidationError("discount_type must be either 'percentage' or 'price' ")
+        if self.ending < timezone.now():
+            raise ValidationError("Discount end date can not be before start date")
+
+        set_percentage_or_price_check = {
+             "percentage" : self.percentage_or_price * 0.03 if self.percentage_or_price else 3,
+             "price" : self.percentage_or_price
+        }
+
+        self.percentage_or_price = set_percentage_or_price_check.get(self.discount_type)
+
+        
+         
+          
+               
+               
+          
      @transaction.atomic
      def save(self, **kwargs :dict) -> None:
         return super().save(**kwargs)
