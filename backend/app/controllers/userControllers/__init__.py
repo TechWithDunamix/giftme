@@ -6,6 +6,6 @@ from .userMemberhipPlanControllers import UserMembershipPlanController
 
 from  .userPostController import UserPostController
 
-from .userProductsController import UserProductListController
+from .userProductsController import UserProductListController,UserProductsDiscountController
 
 from .userProfileController import UserProfileController

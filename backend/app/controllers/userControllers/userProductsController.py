@@ -1,14 +1,15 @@
 from ...modules.authViews import C_APIView
 from ...common.customResponse import MakeResponse 
 from django.http import HttpRequest,HttpResponse
-from ...serializers.userProductsSerializers import UserProductCrationSerializer,UserProductListViewSerializer
+from ...serializers.userProductsSerializers import (UserProductCrationSerializer ,UserProductListViewSerializer,
+                                                    UserProductDiscountCreateSerialializers,UserProductDiscountListSerialializers)
 from rest_framework.serializers import Serializer
-from ...models.userProducts import ProductList,Category
+from ...models.userProducts import ProductList,Category,ProductDiscount
 import json
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from typing import Any
+from typing import Any,Dict
 class UserProductListController(C_APIView):
     def get(self,request:HttpRequest,id = None,*args :list, **kwargs :dict) ->HttpResponse:
         if not id:
@@ -100,3 +101,35 @@ class UserProductListController(C_APIView):
 
 
         return MakeResponse({"succes" : "updated"})
+    
+
+class UserProductsDiscountController(C_APIView):
+
+    def get(self, request : HttpRequest, *args : list, **kwargs :dict) -> HttpResponse:
+        queryset :QuerySet = ProductDiscount.objects.filter(user = request.user).all()
+        serializer :Serializer = UserProductDiscountListSerialializers(queryset, many = True , context = {
+            "request" : request
+        })
+        return MakeResponse(serializer.data)
+        
+        return MakeResponse({"" :" "})
+        
+    def post(self, request :HttpRequest, *args :list, **kwargs : dict) ->HttpResponse:
+        serializer :Serializer = UserProductDiscountCreateSerialializers(data = request.data)
+        if not serializer.is_valid():
+            return MakeResponse(serializer.errors, status=400)
+
+        productsQuerySet = ProductList.objects.filter(user = request.user)        
+        products_ids = serializer.validated_data['products_ids']
+        products = [get_object_or_404(productsQuerySet,id = id) for id in products_ids]
+        discountData :Dict[str, Any] = {}
+        for key, value in serializer.validated_data.items():
+            if not key == "products_ids":
+                discountData.setdefault(key, value)
+        
+        obj :ProductDiscount = ProductDiscount.objects.create(**discountData, user = request.user)
+        obj.products.set(products)
+        return MakeResponse({"success" : "Discount created"})
+    
+
+

@@ -62,7 +62,7 @@
             event.preventDefault(); // Prevent the default form submission
 
             const myHeaders = new Headers();
-            myHeaders.append("Authorization", "Token e9b79c80574628ebed419a800ee70c1a8d11b68d");
+            myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwidXNlcl9pZCI6IjYxNzgwNjVhLTNmMjEtNDBkNy1iNGUwLWJkYTU0OWNlNjM4MCIsImV4cCI6MTczMDM2MTMwNiwiaWF0IjoxNzMwMTQ1MzA2fQ.aCBVCNYAGEVYv5segaxJr6_u6NwphUD9yIFpesypqAA");
 
             const formdata = new FormData();
             const image = document.getElementById("image").files[0];
@@ -77,13 +77,14 @@
             formdata.append("draft", document.getElementById("draft").checked);
 
             const requestOptions = {
-                method: "PUT",
+                method: "POST",
                 headers: myHeaders,
                 body: formdata,
-                redirect: "follow"
+                redirect: "follow",
+                "credentials" : "include"
             };
 
-            fetch("http://127.0.0.1:8011/api/v1/user/product/d890d61b-8fef-40f0-9b78-6f11224b7809", requestOptions)
+            fetch("http://127.0.0.1:8000/api/v1/user/product/create", requestOptions)
                 .then((response) => response.text())
                 .then((result) => console.log(result))
                 .catch((error) => console.error(error));

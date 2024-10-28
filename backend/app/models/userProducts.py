@@ -69,16 +69,16 @@ class ProductSales(C_BaseModels):
     
 
 class ProductDiscount(C_BaseModels):
-     
+     user = models.ForeignKey(AuthUserModel, related_name="discount", on_delete=models.CASCADE,null = True)
      title :str = models.CharField(max_length=120)
 
      percentage_or_price :Union[int, float] = models.FloatField()
 
-     starting = models.DateTimeField(default=timezone.now())
+     starting = models.DateTimeField(default=timezone.now)
 
      ending = models.DateTimeField(null=True)
 
-     products :ProductList = models.ManyToManyField(ProductList, related_name = "discounts")
+     products :Union[models.ManyToManyField] = models.ManyToManyField(ProductList, related_name = "discounts")
 
      limit_quantity:bool = models.BooleanField(default=False)
 
@@ -86,29 +86,17 @@ class ProductDiscount(C_BaseModels):
 
      discount_type :str = models.CharField(max_length = 250, default="percentage")
 
-     def clean(self) -> None:
-        
-        if self.discount_type not in ["percentage","price"]:
-             raise ValidationError("discount_type must be either 'percentage' or 'price' ")
-        if self.ending < timezone.now():
-            raise ValidationError("Discount end date can not be before start date")
-
-        set_percentage_or_price_check = {
-             "percentage" : self.percentage_or_price * 0.03 if self.percentage_or_price else 3,
-             "price" : self.percentage_or_price
-        }
-
-        self.percentage_or_price = set_percentage_or_price_check.get(self.discount_type)
-
-        
-         
-          
-               
-               
-          
+    
      @transaction.atomic
      def save(self, **kwargs :dict) -> None:
         return super().save(**kwargs)
+     
+
+     @property
+     def products_detail(self):
+          qs = self.products.values("name","image","id")
+          return qs
+
 
 
      
