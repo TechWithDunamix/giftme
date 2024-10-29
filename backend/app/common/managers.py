@@ -3,7 +3,7 @@ from django.db.models import Manager
 from django.contrib.auth.models import BaseUserManager 
 from django.db.models import Q,QuerySet
 from django.utils import timezone
-from .querysets import PostListQuerysets
+from .querysets import PostListQuerysets,ProductDiscountQuerySet
 class UserManager(BaseUserManager):
 
      def create_user(self,email:str, password: str,username:str,last_name:str,first_name: str,country:str) -> object:
@@ -81,4 +81,14 @@ class PostManager(Manager):
         return self.get_queryset().get_published(published = False)
 
 
+    
+class ProductDiscountManager(Manager):
+
+    def get_queryset(self) -> ProductDiscountQuerySet:
+        return ProductDiscountQuerySet(self.model,using=self.db)
+    
+
+    @property
+    def get_active(self):
+        return self.get_queryset().get_active().all()
     

@@ -2,7 +2,7 @@ from ...modules.authViews import C_APIView
 from ...common.customResponse import MakeResponse 
 from django.http import HttpRequest,HttpResponse
 from ...serializers.userProductsSerializers import (UserProductCrationSerializer ,UserProductListViewSerializer,
-                                                    UserProductDiscountCreateSerialializers,UserProductDiscountListSerialializers)
+                                                    UserProductDiscountCreateSerialializers,UserProductDiscountListSerialializers,UserProductDiscountUpdateSerialializers)
 from rest_framework.serializers import Serializer
 from ...models.userProducts import ProductList,Category,ProductDiscount
 import json
@@ -106,7 +106,7 @@ class UserProductListController(C_APIView):
 class UserProductsDiscountController(C_APIView):
 
     def get(self, request : HttpRequest, *args : list, **kwargs :dict) -> HttpResponse:
-        queryset :QuerySet = ProductDiscount.objects.filter(user = request.user).all()
+        queryset :QuerySet = ProductDiscount.query.get_active.filter(user = request.user)
         serializer :Serializer = UserProductDiscountListSerialializers(queryset, many = True , context = {
             "request" : request
         })
@@ -130,6 +130,37 @@ class UserProductsDiscountController(C_APIView):
         obj :ProductDiscount = ProductDiscount.objects.create(**discountData, user = request.user)
         obj.products.set(products)
         return MakeResponse({"success" : "Discount created"})
+    
+
+    def put(self, request : HttpRequest, id = None, *args :list, **kwargs :dict) -> HttpResponse:
+        queryset :QuerySet = ProductDiscount.objects.filter(user = request.user).all()
+        obj :ProductDiscount = get_object_or_404(queryset, id = id)
+        print(obj)
+        serializer :Serializer = UserProductDiscountUpdateSerialializers(data = request.data)
+        if not serializer.is_valid():
+            return MakeResponse(serializer.errors,status=400)
+        products_ids :list = serializer.validated_data.get("products_ids")
+
+        
+        
+        for key, value in serializer.validated_data.items():
+            if not key == "products_ids":
+               setattr(obj, key,value)
+        if products_ids:
+            productsQuerySet = ProductList.objects.filter(user = request.user)        
+            products = [get_object_or_404(productsQuerySet,id = id) for id in products_ids]
+            obj.products.set(products)
+
+        obj.save()
+
+        return MakeResponse({"updated" :True})
+        
+    def delete(self, request : HttpRequest, id = None, *args :list, **kwargs :dict) -> HttpResponse:
+        queryset :QuerySet = ProductDiscount.objects.filter(user = request.user).all()
+        obj :ProductDiscount = get_object_or_404(queryset, id = id)
+        obj.delete()
+        return MakeResponse({"deleted" :True})
+
     
 
 

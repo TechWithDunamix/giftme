@@ -116,3 +116,43 @@ class UserProductDiscountListSerialializers(serializers.Serializer):
         
 
        
+class UserProductDiscountUpdateSerialializers(serializers.Serializer):
+
+    def __init__(self, *args,**kwargs):
+        super().__init__(*args,**kwargs)
+        for field_name, field in self.fields.items():
+            field.required = False
+    
+    title :str = serializers.CharField()
+
+    percentage_or_price :Union[int, float] = serializers.FloatField(required = True)
+
+    starting :str = serializers.DateTimeField(required = False)
+
+    ending :str = serializers.DateTimeField()
+
+    products_ids = serializers.ListField(
+        child = serializers.UUIDField()
+    )
+    limit_quantity :bool = serializers.BooleanField(default = False, required = False)
+
+    max_quantity :str = serializers.CharField(required = False)
+
+    discount_type :str = serializers.CharField()    
+
+
+    def validate(self, attrs : Dict[str, any]) -> Dict[str, any]:
+        discount_type = attrs.get("discount_type")
+        starting = attrs.get("starting")
+        ending = attrs.get("ending")
+        percentage_or_price = attrs.get("percentage_or_price")
+
+        if discount_type not in ["percentage","price"]:
+             raise serializers.ValidationError("discount_type must be either 'percentage' or 'price' ")
+             
+        starting_date = starting or timezone.now()
+
+        if not ending > starting_date:
+            raise serializers.ValidationError("Discount end date can not be before start date")
+
+        return attrs

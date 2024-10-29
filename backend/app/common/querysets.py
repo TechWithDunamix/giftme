@@ -14,5 +14,12 @@ class PostListQuerysets(models.QuerySet):
             query:models.Q = models.Q(scheduled_for__gt = timezone.now()) & models.Q(scheduled = True)
 
         return self.filter(query).all()
+    
+
+
+class ProductDiscountQuerySet(models.QuerySet):
+    def get_active(self, **kwargs: dict):
+        query :models.Q = models.Q(ending__gt = timezone.now())
+        return self.filter(query).all()
         
         

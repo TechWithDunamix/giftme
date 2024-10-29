@@ -8,7 +8,8 @@ from django.db.models import Manager
 from .sponsors import Sponsors
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-
+from ..common.managers import ProductDiscountManager
+from django.db.models.manager import Manager
 class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
 
@@ -100,4 +101,5 @@ class ProductDiscount(C_BaseModels):
 
 
      
-     
+     query :ProductDiscountManager = ProductDiscountManager()
+     objects = Manager()
