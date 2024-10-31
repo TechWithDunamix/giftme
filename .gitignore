@@ -1,2 +1,3 @@
 ./backend/.env
 ./backend/.TODO
+.backend/venv

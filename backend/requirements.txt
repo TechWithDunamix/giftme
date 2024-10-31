@@ -1,0 +1,9 @@
+django==4.2
+djangorestframework==3.14.0
+celery==5.3.1
+channels==4.0.0
+channels_redis==4.0.0
+python-dotenv
+django-cors-headers==4.0.0
+pyjwt
+pillow
