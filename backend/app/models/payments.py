@@ -14,11 +14,13 @@ class Payments(C_BaseModels):
 
     sponsor = models.ForeignKey(Sponsors, on_delete = models.CASCADE, related_name="payments")
 
-    _type = models.CharField(max_length=120)
-
     amount :float = models.FloatField()
 
     message = models.TextField(null=True)
+
+    refrence :str = models.CharField()
+
+    object_name :str = models.CharField()
 
     class Meta:
 

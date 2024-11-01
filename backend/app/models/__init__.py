@@ -2,7 +2,7 @@ from .authModels import AuthUserModel
 
 from .userProfile import UserProfile
 
-from .userProducts import ProductList,Category,ProductSales,ProductDiscount
+from .userProducts import ProductList,Category,ProductSales,ProductDiscount,CartItems
 
 from .userPosts import UserPost
 

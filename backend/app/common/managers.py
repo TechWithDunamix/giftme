@@ -2,8 +2,7 @@ from typing import Any
 from django.db.models import Manager
 from django.contrib.auth.models import BaseUserManager 
 from django.db.models import Q,QuerySet
-from django.utils import timezone
-from .querysets import PostListQuerysets,ProductDiscountQuerySet
+from .querysets import PostListQuerysets,ProductDiscountQuerySet,ProductListQuerySet
 class UserManager(BaseUserManager):
 
      def create_user(self,email:str, password: str,username:str,last_name:str,first_name: str,country:str) -> object:
@@ -43,6 +42,8 @@ class UserManager(BaseUserManager):
 
 
 class ProductListManager(Manager):
+    def get_queryset(self) -> ProductListQuerySet:
+        return ProductListQuerySet(self.model, using=self._db)
     def filter_draft(self, *args: Any, **kwargs: Any):
 
         
@@ -58,6 +59,10 @@ class ProductListManager(Manager):
         kwargs['draft'] = True if kwargs.get("draft") == "true" else False
 
         return super().filter(*args, **kwargs)
+      
+    
+    def get_top_products(self) -> "ProductListManager":
+        return self.get_queryset().get_top_products().distinct()
     
 
 class PostManager(Manager):
@@ -91,4 +96,6 @@ class ProductDiscountManager(Manager):
     @property
     def get_active(self):
         return self.get_queryset().get_active().all()
+  
+        
     

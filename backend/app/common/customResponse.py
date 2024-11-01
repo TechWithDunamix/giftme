@@ -5,9 +5,21 @@ from rest_framework.serializers import Serializer
 from django.http import HttpRequest
 from django.db.models import QuerySet
 from ..modules.paginator import paginate_qs
+from typing import TypedDict,List,Dict,Any,Union,Optional
+
+
+
+class MakeResponseType(TypedDict):
+    data :Union[List[dict], Dict[str,any]]
+    message :Optional[str]
+    paginate :Optional[bool]
+    status :Optional[int]
+    request :HttpRequest
+    serializer :Serializer
+
 class MakeResponse(Response):
 
-    def __init__(self, data=[],message = None,paginate:bool = False, status=200, template_name=None, headers=None, exception=False, content_type=None,**kwargs):
+    def __init__(self, data=[],message = None,paginate:bool = False, status=200, template_name=None, headers=None, exception=False, content_type=None,**kwargs:MakeResponseType):
 
 
         # if not data and paginate == False:

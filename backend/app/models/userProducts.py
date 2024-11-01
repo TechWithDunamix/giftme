@@ -10,13 +10,13 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from ..common.managers import ProductDiscountManager
 from django.db.models.manager import Manager
-
+Shops = AuthUserModel
 class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
 
 class ProductList(C_BaseModels):
 
-    objects:Manager = ProductListManager()
+    objects:   Manager = ProductListManager()
     
     user :AuthUserModel = models.ForeignKey(AuthUserModel,related_name="user_products",on_delete=models.CASCADE,null=True)
 
@@ -61,14 +61,6 @@ class ProductList(C_BaseModels):
          db_table = "Product"
 
 
-class ProductSales(C_BaseModels):
-
-    product = models.ForeignKey(ProductList, related_name="sales", on_delete = models.CASCADE)
-    sponsor  = models.ForeignKey(Sponsors, related_name="buys", on_delete = models.CASCADE)
-
-    @transaction.atomic
-    def save(self, **kwargs :dict) -> None:
-        return super().save(**kwargs)
     
 
 class ProductDiscount(C_BaseModels):
@@ -102,6 +94,35 @@ class ProductDiscount(C_BaseModels):
 
 
 
-     
+        
+       
      query :ProductDiscountManager = ProductDiscountManager()
      objects = Manager()
+
+
+
+
+class CartItems(C_BaseModels):
+     owner :Sponsors = models.ForeignKey(Sponsors, related_name="cartItems", on_delete=models.CASCADE)
+
+     shop :Shops = models.ForeignKey(Shops, related_name="orders", on_delete=models.CASCADE)
+
+     products :ProductList = models.ForeignKey(ProductList, related_name="product_sales", on_delete=models.CASCADE)
+
+     ordered :bool = models.BooleanField(default=False)
+
+     delivered :bool = models.BooleanField(default=False)
+
+     class Meta:
+          db_table = "Cart Items"
+
+
+
+class ProductSales(C_BaseModels):
+
+    product = models.ForeignKey(ProductList, related_name="all_sales", on_delete = models.CASCADE)
+    sponsor  = models.ForeignKey(Sponsors, related_name="buys", on_delete = models.CASCADE)
+
+    @transaction.atomic
+    def save(self, **kwargs :dict) -> None:
+        return super().save(**kwargs)
