@@ -1,7 +1,7 @@
 import httpx
 from asgiref.sync import async_to_sync
 from config.settings import PAYSTACK_SECRET
-class PaystackSync:
+class PaystackCLient:
     def __init__(self, secret_key):
         self.base_url = "https://api.paystack.co"
         self.secret_key = PAYSTACK_SECRET

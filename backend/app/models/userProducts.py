@@ -37,6 +37,9 @@ class ProductList(C_BaseModels):
     draft:bool = models.BooleanField(default=False)
 
     free_for_members :bool = models.BooleanField(default=False)
+
+
+
     class Meta:
         db_table = "Products"
 
