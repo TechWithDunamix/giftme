@@ -7,3 +7,6 @@ python-dotenv
 django-cors-headers==4.0.0
 pyjwt
 pillow
+asgiref
+httpx
+psycopg2-binary

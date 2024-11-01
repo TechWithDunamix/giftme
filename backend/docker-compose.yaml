@@ -1,0 +1,53 @@
+version: '3.8'  
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5430:5432"    
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql15/data /giftme
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6370:6379"  
+
+#   celery:
+#     build: .
+#     environment:
+#       - CELERY_BROKER_URL=redis://redis:6379/0
+#       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+#     command: celery -A config worker --loglevel=info
+#     depends_on:
+#       - web
+#       - redis
+#     volumes:
+#       - .:/app  
+
+volumes:
+  postgres_data:
