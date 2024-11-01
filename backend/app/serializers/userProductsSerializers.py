@@ -29,6 +29,7 @@ class UserProductCrationSerializer(serializers.Serializer):
     setting : dict =serializers.JSONField(default = DEFAULT_SETTING)
 
     draft : bool = serializers.BooleanField(default = False)
+    free_for_members :bool = serializers.BooleanField()
 
 
 class UserProductListViewSerializer(serializers.ModelSerializer):

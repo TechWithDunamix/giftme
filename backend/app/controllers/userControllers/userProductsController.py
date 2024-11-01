@@ -57,7 +57,7 @@ class UserProductListController(C_APIView):
         
         
 
-        categoryJSON:json.JSONDecoder = json.loads(serializer.data.get("category")[0])
+        categoryJSON:json.JSONDecoder = json.loads(serializer.dafree_for_membersta.get("category")[0])
         
         category:Category = [Category.objects.get_or_create(name = names)[0] for names in categoryJSON]
 

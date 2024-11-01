@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from ..common.managers import ProductDiscountManager
 from django.db.models.manager import Manager
+
 class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
 
@@ -35,6 +36,7 @@ class ProductList(C_BaseModels):
 
     draft:bool = models.BooleanField(default=False)
 
+    free_for_members :bool = models.BooleanField(default=False)
     class Meta:
         db_table = "Products"
 

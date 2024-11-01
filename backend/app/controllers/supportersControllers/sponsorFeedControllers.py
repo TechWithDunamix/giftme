@@ -4,12 +4,15 @@ from ...modules.authManager import C_JWT_SponsorAuthentication
 from django.http import HttpRequest,HttpResponse
 from rest_framework.decorators import authentication_classes,permission_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from ...models.userPosts import UserPost,models
+from ...models.userPosts import UserPost
+from django.db import models
+from ...models.userProducts import ProductList
 from django.utils import timezone
 from ...serializers.sponsorsFeedSerializers import SponsorsPostFeedListSerializer
 from rest_framework.serializers import Serializer
 from django.shortcuts import get_object_or_404
-class FeedsController(APIView):
+from typing import Dict, List
+class PostFeedController(APIView):
     
     authentication_classes = [C_JWT_SponsorAuthentication]
     permission_classes = [AllowAny]
@@ -39,3 +42,12 @@ class FeedsController(APIView):
         return MakeResponse(
            serializer.data
         )
+    
+class ProductsFeeds(APIView):
+    
+    authentication_classes = [C_JWT_SponsorAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request :HttpRequest, *args :List[str], **kwargs :Dict[str, any]) -> HttpResponse:
+        
+        queries = False

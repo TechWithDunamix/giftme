@@ -1,9 +1,9 @@
 from django.urls import path
-from ..controllers import FeedsController 
+from ..controllers import PostFeedController 
 
 
 sponsors_feeds_routes = [
-    path("feeds",FeedsController.as_view()),
-    path("feeds/<uuid:id>",FeedsController.as_view())
+    path("feeds/posts",PostFeedController.as_view()),
+    path("feeds/pasts/<uuid:id>",PostFeedController.as_view())
 
 ]

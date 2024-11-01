@@ -16,7 +16,7 @@ class UserListController(APIView):
                 .distinct().prefetch_related("user_profile")
         if not id:
 
-            query_set :AuthUserModel  = AuthUserModel.objects.filter(user_profile__isnull = False) \
+            query_set :AuthUserModel  = AuthUserModel.get_top_users().filter(user_profile__isnull = False) \
                 .distinct().prefetch_related("user_profile")
         
             return MakeResponse(

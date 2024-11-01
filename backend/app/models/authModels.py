@@ -1,11 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser 
+
 from datetime import datetime
 from typing import Iterable, Union,Optional
 from ..common.validators import AuthValidators
 from ..common.managers import UserManager
 from django.utils import crypto
 from django.db import transaction
+from .comments import Comment
+from django.db.models import F,FloatField,ExpressionWrapper,Count
 import uuid
 USER_CREATION_VALIDATORS = AuthValidators()
 class AuthUserModel(AbstractBaseUser):
@@ -47,6 +50,26 @@ class AuthUserModel(AbstractBaseUser):
         with transaction.atomic():
             return super().save(**kwargs)
         
+
+    
+    
+    @classmethod
+    def get_top_users(cls, top_n = 10):
+        return cls.objects.annotate(
+            memberships__count = Count("memberships"),
+            user_products__count = Count("user_products"),
+            followers__count = Count("followers")
+            ,weighted_score = ExpressionWrapper(
+            F('memberships__count') * 0.5 +
+            F('user_products__count') * 0.1 +
+            F('followers__count') * 0.2 +
+            Comment.objects.filter(
+                models.Q(object_id=F('id')) &
+                models.Q(object_name=cls.__name__)
+            ).count() * 0.2,
+            output_field=FloatField()
+        )).order_by("-weighted_score")
+
 
     
     class Meta:
