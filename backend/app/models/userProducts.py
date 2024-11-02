@@ -38,6 +38,7 @@ class ProductList(C_BaseModels):
 
     free_for_members :bool = models.BooleanField(default=False)
 
+    file  = models.FileField(upload_to="products/files",null=True)
 
 
     class Meta:

@@ -1,49 +1,26 @@
-# from config.settings import SECRET_KEY
-# import jwt
-# from django.contrib.auth.models import AnonymousUser
-# from typing import Any
-# from django.http import HttpRequest,HttpResponse
-# from ..models.authModels import AuthUserModel
-# class C_AuthenticationMiddleware:
+from django.http import HttpRequest,HttpResponse
 
-#     def __init__(self,get_response:HttpResponse) -> None:
+class CORSMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-#         self.get_response = get_response 
-
-
-#     def __call__(self, request:HttpRequest) -> Any:
-
-#         auth_header:str = request.headers.get("Authorization")
-#         if not auth_header:
-#             request.user = AnonymousUser 
-#             response = self.get_response(request)
-
-#             return response 
-            
-#         token:str = auth_header.split(' ')[1]
+    def __call__(self, request :HttpRequest):
+        response :HttpResponse = self.get_response(request)
         
-#         try:
-#             payload:dict = jwt.decode(token,SECRET_KEY,algorithms="HS256")
-#             print(payload.get("user_id"))
-#             user = AuthUserModel.objects.get(id = payload.get("user_id"))
-#             print(user)
-            
-#             request.user = user 
-#             print(request.user)
+        response["access-control-allow-origin"] = "http://127.0.0.1:5500"  
+        response["access-control-allow-methods"] = "GET, POST, OPTIONS, PUT, DELETE"
+        response["Access-Control-Allow-Credentials"] = "true"
+
+
+        response["Access-Control-Allow-Headers"] = (
+            "Authorization, Content-Type, X-Requested-With, Accept, Origin"
+        )
         
 
-#         except:
-            
-#             request.user = AnonymousUser 
-
-#         response = self.get_response(request)
-        
-#         return response
-
-        
+        if request.method == "OPTIONS":
+            response.status_code = 200
+            response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
+            response["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
 
 
-
-
-
-
+        return response

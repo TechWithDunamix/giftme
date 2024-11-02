@@ -28,16 +28,13 @@ SECRET_KEY = "django-insecure-o%v=)(qek*v0lg+m-2#ba=$6d)0=p^odrft7hzvz$n^%+9nu1j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    
     "rest_framework",
-    "rest_framework.authtoken",
-    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,9 +46,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "app.common.middlewares.CORSMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -143,6 +140,12 @@ AUTH_USER_MODEL = "app.AuthUserModel"
 MEDIA_ROOT = "media/"
 MEDIA_URL = "media/"
 
-CORS_ALLOW_ALL_ORIGINS = True
 
 PAYSTACK_SECRET = os.getenv("PAYSTACK_PUBLIC_SECRET")
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOW_HEADERS = [
+    "Authorization",
+    "Content-Type"
+]

@@ -41,23 +41,18 @@ class UserProductListController(C_APIView):
         return MakeResponse(serializer.data)
     @transaction.atomic
     def post(self, request:HttpRequest, *args: list,**kwargs:dict) ->HttpResponse:
+        print(request.data)
         serializer:Serializer = UserProductCrationSerializer(data = request.data)
 
         if not serializer.is_valid():
             return MakeResponse(serializer.errors,status=400)
         
         productData :dict  = {}
-        for key,value in serializer.data.items():
+        for key,value in serializer.validated_data.items():
             if key !="image" and key !="category":
                 productData.setdefault(key,value)
 
-      
-        productData.setdefault("image",request.FILES.get("image"))
-
-        
-        
-
-        categoryJSON:json.JSONDecoder = json.loads(serializer.dafree_for_membersta.get("category")[0])
+        categoryJSON:json.JSONDecoder = json.loads(serializer.validated_data.get("category")[0])
         
         category:Category = [Category.objects.get_or_create(name = names)[0] for names in categoryJSON]
 

@@ -21,7 +21,7 @@ class CartsController(APIView):
         return MakeResponse(serializer.data)
 
     def post(self, request :HttpRequest, id = None, *args :list, **kwargs :dict) -> HttpResponse:
-        product :ProductList = get_object_or_404(ProductList, id = id)
+        product :ProductList = get_object_or_404(ProductList.objects.filter(draft = False), id = id)
         owner = Sponsors.get_or_create(email = request.user.email)
         CartItems.objects.create(owner = owner, shop = product.user,products = product )
         return MakeResponse({"sucess" : "product added successfuly"})

@@ -60,9 +60,9 @@
     <script>
         document.getElementById("productForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent the default form submission
-
             const myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwidXNlcl9pZCI6IjYxNzgwNjVhLTNmMjEtNDBkNy1iNGUwLWJkYTU0OWNlNjM4MCIsImV4cCI6MTczMDM2MTMwNiwiaWF0IjoxNzMwMTQ1MzA2fQ.aCBVCNYAGEVYv5segaxJr6_u6NwphUD9yIFpesypqAA");
+            
+            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwidXNlcl9pZCI6ImVmNDhkMzZkLTEwZTAtNDk0YS1iZTcxLWRlODhhOGIyYzU4YSIsImV4cCI6MTczMDYzOTI0OCwiaWF0IjoxNzMwNDIzMjQ4fQ.hxtkTTbKOW52lI0DySaSWl3HP8jIOK1giYyhpvBSkYo");
 
             const formdata = new FormData();
             const image = document.getElementById("image").files[0];

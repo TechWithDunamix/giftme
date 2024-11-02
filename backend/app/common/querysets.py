@@ -32,7 +32,7 @@ class ProductListQuerySet(models.QuerySet):
         #imported this here to avoint circuler import
 
         top_users = AuthUserModel.get_top_users().distinct().values_list("id",flat=True)
-        return self.all().annotate(is_top_product = Case(
+        return self.filter(draft = False).annotate(is_top_product = Case(
             When(user_id__in = top_users, then=True),
             default=False,
             output_field=BooleanField()

@@ -30,6 +30,7 @@ class UserProductCrationSerializer(serializers.Serializer):
 
     draft : bool = serializers.BooleanField(default = False)
     free_for_members :bool = serializers.BooleanField()
+    file  = serializers.FileField(required = False)
 
 
 class UserProductListViewSerializer(serializers.ModelSerializer):
