@@ -1,10 +1,11 @@
 import httpx
 from asgiref.sync import async_to_sync
 from config.settings import PAYSTACK_SECRET
+print(PAYSTACK_SECRET)
 class PaystackCLient:
     def __init__(self, secret_key):
         self.base_url = "https://api.paystack.co"
-        self.secret_key = PAYSTACK_SECRET
+        self.secret_key = secret_key
         self.headers = {
             "Authorization": f"Bearer {self.secret_key}",
             "Content-Type": "application/json"
@@ -20,7 +21,8 @@ class PaystackCLient:
         }
         async with httpx.AsyncClient() as client:
             response = await client.post(url, json=data, headers=self.headers)
-        return response.json()
+            
+        return response.json(),response.status_code
 
     def create_subaccount(self, business_name, bank_code, account_number, percentage_charge):
         """

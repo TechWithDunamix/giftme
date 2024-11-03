@@ -35,9 +35,12 @@ class AuthUserModel(AbstractBaseUser):
 
 
     country:str = models.CharField(max_length=230,default="Nigeria")
+
     is_active:bool = models.BooleanField(default=True)
 
     USERNAME_FIELD:str = "email"
+
+    account_id :str = models.CharField(max_length=160, null=True)
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"

@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         canvas {
             border: 1px solid #d3d3d3;
             background-color: #f1f1f1;
         }
+
         form {
             display: flex;
             flex-direction: column;
             max-width: 400px;
             margin: auto;
         }
+
         label {
             margin: 5px 0;
         }
-        input, textarea {
+
+        input,
+        textarea {
             margin: 10px 0;
             padding: 10px;
             border: 1px solid #d3d3d3;
         }
     </style>
 </head>
+
 <body>
     <h2>Create a Product</h2>
     <form id="productForm">
@@ -41,6 +47,7 @@
 
         <label for="image">Image:</label>
         <input type="file" id="image" name="image" accept="image/*" required>
+        <input type="file" id="file" name="image" required>
 
         <label for="setting">Settings (JSON format):</label>
         <textarea id="setting" name="setting" required>
@@ -58,37 +65,42 @@
     </form>
 
     <script>
-        document.getElementById("productForm").addEventListener("submit", function(event) {
+        document.getElementById("productForm").addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent the default form submission
             const myHeaders = new Headers();
-            
+
             myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwidXNlcl9pZCI6ImVmNDhkMzZkLTEwZTAtNDk0YS1iZTcxLWRlODhhOGIyYzU4YSIsImV4cCI6MTczMDYzOTI0OCwiaWF0IjoxNzMwNDIzMjQ4fQ.hxtkTTbKOW52lI0DySaSWl3HP8jIOK1giYyhpvBSkYo");
 
             const formdata = new FormData();
             const image = document.getElementById("image").files[0];
+            const file = document.getElementById("file").files[0];
+
             const category = document.getElementById("category").value.split(',').map(item => item.trim());
 
             formdata.append("name", document.getElementById("name").value);
             formdata.append("description", document.getElementById("description").value);
             formdata.append("price", document.getElementById("price").value);
             formdata.append("category", JSON.stringify(category));
+
             formdata.append("image", image);
+            formdata.append("file", file);
+
             // formdata.append("setting", document.getElementById("setting").value);
             formdata.append("draft", document.getElementById("draft").checked);
 
             const requestOptions = {
-                method: "POST",
+                method: "PUT",
                 headers: myHeaders,
                 body: formdata,
-                redirect: "follow",
-                "credentials" : "include"
+                "credentials": "include"
             };
 
-            fetch("http://127.0.0.1:8000/api/v1/user/product/create", requestOptions)
+            fetch("http://127.0.0.1:8000/api/v1/user/product/7c427c04-7b6e-44d8-b6d1-ef38eccea8e2", requestOptions)
                 .then((response) => response.text())
                 .then((result) => console.log(result))
                 .catch((error) => console.error(error));
         });
     </script>
 </body>
+
 </html>

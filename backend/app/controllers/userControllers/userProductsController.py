@@ -41,7 +41,6 @@ class UserProductListController(C_APIView):
         return MakeResponse(serializer.data)
     @transaction.atomic
     def post(self, request:HttpRequest, *args: list,**kwargs:dict) ->HttpResponse:
-        print(request.data)
         serializer:Serializer = UserProductCrationSerializer(data = request.data)
 
         if not serializer.is_valid():
@@ -49,9 +48,8 @@ class UserProductListController(C_APIView):
         
         productData :dict  = {}
         for key,value in serializer.validated_data.items():
-            if key !="image" and key !="category":
+            if key !="category":
                 productData.setdefault(key,value)
-
         categoryJSON:json.JSONDecoder = json.loads(serializer.validated_data.get("category")[0])
         
         category:Category = [Category.objects.get_or_create(name = names)[0] for names in categoryJSON]
@@ -73,11 +71,17 @@ class UserProductListController(C_APIView):
             return MakeResponse(serializer.errors,status=400)
         userProducts :QuerySet = ProductList.objects.filter(user = request.user)
         _object :ProductList = get_object_or_404(userProducts,id = id)
+        if serializer.validated_data['image']:
+            _object.image.delete()
+        if serializer.validated_data['file']:
+            _object.file.delete()
         _object_data :dict =  {
             "name" : serializer.validated_data.get("name",_object.name),
             "description" : serializer.validated_data.get("description",_object.description),
             "price" : serializer.validated_data.get("price",_object.price),
             "image" : request.FILES.get("image",_object.image),
+            "image" : request.FILES.get("file",_object.file),
+
             "confirmation_massage" : serializer.validated_data.get("prconfirmation_massageice",_object.confirmation_massage),
             "setting"   :serializer.validated_data.get("setting",_object.setting),
             "draft" : serializer.validated_data.get("draft",_object.draft)
@@ -88,7 +92,8 @@ class UserProductListController(C_APIView):
             categories: dict = [Category.objects.get_or_create(name = x)[0] for x in json.loads(serializer.validated_data.get("category")[0])]
         
         for key,value in _object_data.items():
-            setattr(_object,key,value)
+            if key != "category":
+                setattr(_object,key,value)
 
         _object.category.set(categories)
 

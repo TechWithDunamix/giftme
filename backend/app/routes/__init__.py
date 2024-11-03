@@ -12,6 +12,7 @@ from .sponsorsMembershipRoutes import sponsors_membership_routes
 from .commentsRoutes import comment_routes
 from .reactionRoutes import reaction_routes
 from .cartRoutes import carts_routes
+from .userpaymentaccountroutes import userpaymentdetailsroutes
 urlpatterns = [
     *authUrls,
     *user_profile_routes,
@@ -26,5 +27,6 @@ urlpatterns = [
     *sponsors_membership_routes,
     *comment_routes,
     *reaction_routes,
-    *carts_routes
+    *carts_routes,
+    *userpaymentdetailsroutes
 ]

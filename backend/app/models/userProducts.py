@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from ..common.managers import ProductDiscountManager
 from django.db.models.manager import Manager
+import uuid
 Shops = AuthUserModel
 class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
@@ -52,6 +53,16 @@ class ProductList(C_BaseModels):
     def save(self, **kwargs:dict) -> None:
          self.name = self.name.upper()
          self.price = float(self.price)
+         if self.file:
+          product_file_type = self.file.name.split(".")[-1]
+
+          self.file.name = f"{uuid.uuid4()}.{product_file_type}"
+         if self.image:
+          
+          product_image_type = self.image.name.split(".")[-1]
+
+          self.image.name = f"{uuid.uuid4()}.{product_image_type}"
+
          
          return super().save(**kwargs)
     
@@ -59,6 +70,8 @@ class ProductList(C_BaseModels):
     def delete(self,**kwargs) -> tuple[int, dict[str, int]]:
          if self.image:
               self.image.delete()
+         if self.file:
+              self.file.delete()
          return super().delete(**kwargs)
     class Meta:
          ordering = ["-date_created"]

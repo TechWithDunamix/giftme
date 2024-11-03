@@ -8,6 +8,8 @@ class CORSMiddleware:
         response :HttpResponse = self.get_response(request)
         
         response["access-control-allow-origin"] = "http://127.0.0.1:5500"  
+        response["access-control-allow-origin"] = "http://localhost:5500"  
+
         response["access-control-allow-methods"] = "GET, POST, OPTIONS, PUT, DELETE"
         response["Access-Control-Allow-Credentials"] = "true"
 
