@@ -29,7 +29,46 @@ class PaystackCLient:
         Synchronous wrapper for creating a subaccount.
         """
         return async_to_sync(self._create_subaccount_async)(business_name, bank_code, account_number, percentage_charge)
+    
+    async def _update_subaccount_async(self, subaccount_code, business_name=None, bank_code=None, account_number=None, percentage_charge=None):
+        url = f"{self.base_url}/subaccount/{subaccount_code}"
+        data = {}
 
+        # Only include fields that are provided (not None)
+        if business_name:
+            data["business_name"] = business_name
+        if bank_code:
+            data["bank_code"] = bank_code
+        if account_number:
+            data["account_number"] = account_number
+        if percentage_charge:
+            data["percentage_charge"] = percentage_charge
+
+        async with httpx.AsyncClient() as client:
+            response = await client.put(url, json=data, headers=self.headers)
+        return response.json(), response.status_code
+
+    def update_subaccount(self, subaccount_code, business_name=None, bank_code=None, account_number=None, percentage_charge=None):
+        """
+        Synchronous wrapper for updating a subaccount.
+        """
+        return async_to_sync(self._update_subaccount_async)(subaccount_code, business_name, bank_code, account_number, percentage_charge)
+
+    async def _delete_subaccount_async(self, subaccount_code):
+        """
+        Asynchronously deletes a subaccount given its subaccount code.
+        """
+        url = f"{self.base_url}/subaccount/{subaccount_code}"
+        async with httpx.AsyncClient() as client:
+            response = await client.delete(url, headers=self.headers)
+        return response.json(), response.status_code
+
+    def delete_subaccount(self, subaccount_code):
+        """
+        Synchronous wrapper for deleting a subaccount.
+        """
+        return async_to_sync(self._delete_subaccount_async)(subaccount_code)
+    
     async def _initialize_payment_async(self, email, amount, callback_url, metadata=None):
         url = f"{self.base_url}/transaction/initialize"
         data = {
