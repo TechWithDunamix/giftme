@@ -38,7 +38,7 @@ class UserGalaryController(C_APIView):
 
     @transaction.atomic
     def post(self, request :HttpRequest, *args :list , **kwargs :dict) ->HttpResponse:
-
+        print(request.data)
         serializer :Serializer = UserGalaryCreateSerializer(data = request.data)
 
         if not serializer.is_valid():

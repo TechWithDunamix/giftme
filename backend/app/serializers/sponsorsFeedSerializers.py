@@ -43,6 +43,8 @@ class ProductsFeedsListSerializer(serializers.Serializer):
 
     image :str = serializers.SerializerMethodField()
 
+    spec :Dict[str,any] = serializers.JSONField()
+
     def get_user(self, instance :ProductList) -> Dict[str, str]:
         request :HttpRequest = self.context.get("request")
         user :List[AuthUserModel,UserProfile] = [instance.user, instance.user.user_profile]    
@@ -57,5 +59,5 @@ class ProductsFeedsListSerializer(serializers.Serializer):
     
     def get_image(self,instance :ProductList):
         request :HttpRequest = self.context.get("request")
-        return request.build_absolute_uri(instance.image.url)
+        return request.build_absolute_uri(instance.image.url) if instance.image else ""
 

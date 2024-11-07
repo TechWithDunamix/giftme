@@ -36,5 +36,5 @@ class ProductListQuerySet(models.QuerySet):
             When(user_id__in = top_users, then=True),
             default=False,
             output_field=BooleanField()
-        )).order_by("-is_top_product")
+        )).order_by("-is_top_product").order_by("-date_created")
     

@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from ..common.managers import ProductDiscountManager
 from django.db.models.manager import Manager
 import uuid
+from typing import Dict
 Shops = AuthUserModel
 class Category(C_BaseModels):
     name:str = models.CharField(max_length=150)
@@ -41,6 +42,8 @@ class ProductList(C_BaseModels):
 
     file  = models.FileField(upload_to="products/files",null=True)
 
+    spec :Dict = models.JSONField(default=dict)
+
 
     class Meta:
         db_table = "Products"
@@ -53,6 +56,7 @@ class ProductList(C_BaseModels):
     def save(self, **kwargs:dict) -> None:
          self.name = self.name.upper()
          self.price = float(self.price)
+         self.save_setting(self.setting)
          if self.file:
           product_file_type = self.file.name.split(".")[-1]
 
@@ -73,9 +77,26 @@ class ProductList(C_BaseModels):
          if self.file:
               self.file.delete()
          return super().delete(**kwargs)
+    
+    def save_setting(self, values :Dict[str,any]):
+        DEFAULT_SETTING = {
+            "quantity" : None,
+            "allow_qty" : False,
+            
+        }
+
+        UDPDATED_SETTING = {
+            "quantity" : values.get("quantity",DEFAULT_SETTING['quantity']),
+            "allow_qty" : values.get("allow_qty",DEFAULT_SETTING['allow_qty']),
+            
+        }
+        self.setting = UDPDATED_SETTING
+
+
     class Meta:
          ordering = ["-date_created"]
          db_table = "Product"
+
 
 
     

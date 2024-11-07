@@ -2,7 +2,8 @@ from ...modules.authViews import C_APIView
 from ...common.customResponse import MakeResponse 
 from django.http import HttpRequest,HttpResponse
 from ...serializers.userProductsSerializers import (UserProductCrationSerializer ,UserProductListViewSerializer,
-                                                    UserProductDiscountCreateSerialializers,UserProductDiscountListSerialializers,UserProductDiscountUpdateSerialializers)
+                                                    UserProductDiscountCreateSerialializers,UserProductDiscountListSerialializers,
+                                                    UserProductDiscountUpdateSerialializers,UserProductUpdateSerializer)
 from rest_framework.serializers import Serializer
 from ...models.userProducts import ProductList,Category,ProductDiscount
 import json
@@ -35,7 +36,9 @@ class UserProductListController(C_APIView):
             id = id
         )
 
-        serializer :Serializer = UserProductListViewSerializer(querySetList)
+        serializer :Serializer = UserProductListViewSerializer(querySetList,context = {
+            "request" : request
+        })
 
 
         return MakeResponse(serializer.data)
@@ -66,26 +69,28 @@ class UserProductListController(C_APIView):
     
 
     def put(self,request :HttpRequest,id :Any = None,*args :list, **kwargs :dict) ->HttpResponse:
-        serializer :Serializer = UserProductCrationSerializer(data = request.data)
+        serializer :Serializer = UserProductUpdateSerializer(data = request.data)
         if not serializer.is_valid():
             return MakeResponse(serializer.errors,status=400)
         userProducts :QuerySet = ProductList.objects.filter(user = request.user)
         _object :ProductList = get_object_or_404(userProducts,id = id)
-        if serializer.validated_data['image']:
+        if serializer.validated_data.get("image"):
             _object.image.delete()
-        if serializer.validated_data['file']:
+        if serializer.validated_data.get("file"):
             _object.file.delete()
         _object_data :dict =  {
             "name" : serializer.validated_data.get("name",_object.name),
             "description" : serializer.validated_data.get("description",_object.description),
             "price" : serializer.validated_data.get("price",_object.price),
-            "image" : request.FILES.get("image",_object.image),
-            "image" : request.FILES.get("file",_object.file),
+            "image" : serializer.validated_data.get("image",_object.image),
+            "file" : serializer.validated_data.get("file",_object.file),
 
-            "confirmation_massage" : serializer.validated_data.get("prconfirmation_massageice",_object.confirmation_massage),
+            "confirmation_massage" : serializer.validated_data.get("confirmation_massage",_object.confirmation_massage),
             "setting"   :serializer.validated_data.get("setting",_object.setting),
-            "draft" : serializer.validated_data.get("draft",_object.draft)
+            "draft" : serializer.validated_data.get("draft",_object.draft),
+            "spec" : serializer.validated_data.get("spec",_object.spec),
         }
+        
         categories: dict = _object.category.all()
 
         if serializer.validated_data.get("category"):
@@ -93,6 +98,7 @@ class UserProductListController(C_APIView):
         
         for key,value in _object_data.items():
             if key != "category":
+                print(key)
                 setattr(_object,key,value)
 
         _object.category.set(categories)

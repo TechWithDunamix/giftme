@@ -69,7 +69,7 @@
             event.preventDefault(); // Prevent the default form submission
             const myHeaders = new Headers();
 
-            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwidXNlcl9pZCI6ImVmNDhkMzZkLTEwZTAtNDk0YS1iZTcxLWRlODhhOGIyYzU4YSIsImV4cCI6MTczMDYzOTI0OCwiaWF0IjoxNzMwNDIzMjQ4fQ.hxtkTTbKOW52lI0DySaSWl3HP8jIOK1giYyhpvBSkYo");
+            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwidXNlcl9pZCI6ImVmNDhkMzZkLTEwZTAtNDk0YS1iZTcxLWRlODhhOGIyYzU4YSIsImV4cCI6MTczMDY5Mzc3MSwiaWF0IjoxNzMwNDc3NzcxfQ.OSe8wIAcUxn9VHP5-XQPb7YWkhTO5RIcNSZzOIiWuKY");
 
             const formdata = new FormData();
             const image = document.getElementById("image").files[0];
@@ -95,7 +95,7 @@
                 "credentials": "include"
             };
 
-            fetch("http://127.0.0.1:8000/api/v1/user/product/7c427c04-7b6e-44d8-b6d1-ef38eccea8e2", requestOptions)
+            fetch("http://localhost:8000/api/v1/user/product/7c427c04-7b6e-44d8-b6d1-ef38eccea8e2", requestOptions)
                 .then((response) => response.text())
                 .then((result) => console.log(result))
                 .catch((error) => console.error(error));

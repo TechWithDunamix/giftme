@@ -4,14 +4,7 @@ from ..models.userProducts import ProductList,ProductDiscount,CartItems
 from django.utils import timezone
 from django.http import HttpRequest
 class UserProductCrationSerializer(serializers.Serializer):
-    DEFAULT_SETTING:dict = {
-        "quantity" : 100,
-        "uer_can_choose_quantity" : True,
-        "specs" : {
-
-        }
-
-    }
+    
     name : str = serializers.CharField()
 
     description : str = serializers.CharField()
@@ -26,18 +19,71 @@ class UserProductCrationSerializer(serializers.Serializer):
 
     confirmation_massage : str = serializers.CharField(required = False)
 
-    setting : dict =serializers.JSONField(default = DEFAULT_SETTING)
+    setting : dict =serializers.JSONField(required = False)
 
     draft : bool = serializers.BooleanField(default = False)
     free_for_members :bool = serializers.BooleanField()
     file  = serializers.FileField(required = False)
+    spec :Dict[str,any] = serializers.JSONField(required = False)
 
 
-class UserProductListViewSerializer(serializers.ModelSerializer):
+class UserProductUpdateSerializer(serializers.Serializer):
+
+    def __init__(self, **kwargs):
+       super().__init__(**kwargs)
+       for field in self.fields:
+           self.fields[field].required = False
+        
+    
+    name : str = serializers.CharField()
+
+    description : str = serializers.CharField()
+
+    price : Union[int | float] = serializers.FloatField()
+
+    category : List[str] = serializers.ListField(
+        child = serializers.CharField()
+    )
+
+    image : any  = serializers.ImageField()
+
+    confirmation_massage : str = serializers.CharField(required = False)
+
+    setting : dict =serializers.JSONField(required = False)
+
+    draft : bool = serializers.BooleanField(default = False)
+    free_for_members :bool = serializers.BooleanField()
+    file  = serializers.FileField(required = False)
+    spec :Dict[str,any] = serializers.JSONField(required = False)
+
+
+class UserProductListViewSerializer(serializers.Serializer):
+    id :str = serializers.UUIDField()
+    name :str = serializers.CharField()
+
     caterories  :object = serializers.SerializerMethodField()
-    class Meta:
-        model = ProductList
-        fields:list = ["id",'name',"caterories", 'description', 'price', 'image', 'confirmation_massage', 'setting', 'draft']
+
+    image  :object = serializers.SerializerMethodField()
+
+    file  :object = serializers.SerializerMethodField()
+
+
+    description :str = serializers.CharField()
+
+    price :str = serializers.FloatField()
+
+    setting :Dict[str,any] = serializers.JSONField()
+
+    spec :Dict[str,any] = serializers.JSONField()
+
+    confirmation_massage :str = serializers.CharField()
+
+    draft :bool = serializers.BooleanField()
+
+    free_for_members :bool = serializers.BooleanField()
+
+
+    
 
 
 
@@ -45,6 +91,20 @@ class UserProductListViewSerializer(serializers.ModelSerializer):
     
     def get_caterories(self,obj):
         return [x.name for x in obj.category.all()]
+    
+    def get_image(self, instance :ProductList) -> str:
+        reuqest :HttpRequest = self.context.get("request")
+
+        return reuqest.build_absolute_uri(instance.image.url) if instance.image else None
+    
+     
+    def get_file(self, instance :ProductList) -> str:
+        reuqest :HttpRequest = self.context.get("request")
+
+        return reuqest.build_absolute_uri(instance.file.url) if instance.file else None
+
+    
+
     
 
 
