@@ -25,9 +25,10 @@ class ReactionController(APIView):
         posts = UserPost.objects.filter(*postsQueries).select_related("user").prefetch_related("images")
         modelTypes :dict = {
             "post" : posts.all(),
-            "galary" : UserGalary,
+            "gallery" : UserGalary,
             "product" : ProductList
         }
+        print(request.GET)
         if not modelTypes.get(request.GET.get("type")):
             return MakeResponse(
                 {
@@ -54,7 +55,7 @@ class ReactionController(APIView):
         posts = UserPost.objects.filter(*postsQueries).select_related("user").prefetch_related("images")
         modelTypes :dict = {
             "post" : posts.all(),
-            "galary" : UserGalary,
+            "gallery" : UserGalary,
             "product" : ProductList
         }
         if not modelTypes.get(request.GET.get("type")):

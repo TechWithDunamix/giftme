@@ -38,7 +38,7 @@ class UserGalaryController(C_APIView):
 
     @transaction.atomic
     def post(self, request :HttpRequest, *args :list , **kwargs :dict) ->HttpResponse:
-        print(request.data)
+        
         serializer :Serializer = UserGalaryCreateSerializer(data = request.data)
 
         if not serializer.is_valid():
@@ -53,14 +53,14 @@ class UserGalaryController(C_APIView):
         
         data :dict = {}
 
-        for key,value in serializer.data.items():
-
-            data.setdefault(key,value)
+        for key,value in serializer.validated_data.items():
+            if key != "images":
+                data.setdefault(key,value)
         galary :UserGalary = UserGalary.objects.create(**data,user = request.user)
         galary.images.set(images)
         galary.save()
 
-        return MakeResponse(serializer.validated_data)
+        return MakeResponse(serializer.data)
     
     def delete(self, request :HttpRequest,id = None, *args : list ,**kwargs :dict):
         queryset :UserGalary = UserGalary.objects.filter(user = request.user)

@@ -7,7 +7,7 @@ from ...serializers.userPaymentDetailsSerializers import UserPaymentDetailsSeria
 from rest_framework.serializers import Serializer
 from typing import List,Dict
 class PaymentDetailController(C_APIView):
-    paystack = PaystackCLient(PAYSTACK_SECRET)
+    paystack = PaystackCLient()
     def post(self, request :HttpRequest, *args :list, **kwargs :dict) -> HttpResponse:
         serializer :Serializer = UserPaymentDetailsSerializer(data = request.data)
         if not serializer.is_valid():

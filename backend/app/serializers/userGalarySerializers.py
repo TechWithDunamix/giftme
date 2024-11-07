@@ -3,6 +3,9 @@ from rest_framework import serializers
 from ..models.userGalary import UserGalary
 from django.http import HttpRequest
 class UserGalaryCreateSerializer(Serializer):
+    images  = serializers.ListField(
+        child = serializers.ImageField()
+    )
 
     title :str = serializers.CharField()
 

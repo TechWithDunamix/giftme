@@ -1,13 +1,12 @@
 import httpx
 from asgiref.sync import async_to_sync
 from config.settings import PAYSTACK_SECRET
-print(PAYSTACK_SECRET)
+
 class PaystackCLient:
-    def __init__(self, secret_key):
+    def __init__(self):
         self.base_url = "https://api.paystack.co"
-        self.secret_key = secret_key
         self.headers = {
-            "Authorization": f"Bearer {self.secret_key}",
+            "Authorization": f"Bearer {PAYSTACK_SECRET}",
             "Content-Type": "application/json"
         }
 
@@ -69,23 +68,25 @@ class PaystackCLient:
         """
         return async_to_sync(self._delete_subaccount_async)(subaccount_code)
     
-    async def _initialize_payment_async(self, email, amount, callback_url, metadata=None):
+    async def _initialize_payment_async(self, email, amount, callback_url,subaccount = None, metadata=None):
         url = f"{self.base_url}/transaction/initialize"
         data = {
             "email": email,
-            "amount": amount,
+            "amount": float(amount),
             "callback_url": callback_url,
-            "metadata": metadata or {}
+            "subaccount":subaccount
         }
         async with httpx.AsyncClient() as client:
             response = await client.post(url, json=data, headers=self.headers)
         return response.json()
 
-    def initialize_payment(self, email, amount, callback_url, metadata=None):
+    def initialize_payment(self, email, amount, callback_url,subaccount = None, metadata=None):
         """
         Synchronous wrapper for initializing a payment.
         """
-        return async_to_sync(self._initialize_payment_async)(email, amount, callback_url, metadata)
+        print("sub account is",subaccount)
+
+        return async_to_sync(self._initialize_payment_async)(email, amount,callback_url, subaccount,metadata)
 
     async def _verify_payment_async(self, reference):
         url = f"{self.base_url}/transaction/verify/{reference}"
