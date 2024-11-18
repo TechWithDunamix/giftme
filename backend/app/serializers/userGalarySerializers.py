@@ -34,9 +34,19 @@ class UserGalaryListSerializer(serializers.ModelSerializer):
 
 class UserGalaryUpdateSerializer(Serializer):
 
-    title :str = serializers.CharField()
+    title :str = serializers.CharField(required = False)
 
     
     exclusive :bool = serializers.BooleanField(default = False)
 
-    description :str = serializers.CharField()
+    description :str = serializers.CharField(required = False)
+
+    images  = serializers.ListField(
+        child = serializers.ImageField(),
+        required = False
+    )
+
+class UserGalaryImageUpdateSerializer(serializers.Serializer):
+
+    index :int = serializers.IntegerField()
+    image  = serializers.ImageField()

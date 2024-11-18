@@ -1,4 +1,4 @@
-from ...serializers.userGalarySerializers import UserGalaryCreateSerializer,UserGalaryListSerializer,UserGalaryUpdateSerializer
+from ...serializers.userGalarySerializers import UserGalaryCreateSerializer,UserGalaryListSerializer,UserGalaryUpdateSerializer,UserGalaryImageUpdateSerializer
 from ...common.customResponse import MakeResponse 
 from ...modules.authViews import C_APIView
 from django.http import HttpRequest,HttpResponse
@@ -47,7 +47,7 @@ class UserGalaryController(C_APIView):
         if not self.validate_images(request.FILES):
             return MakeResponse({"images" : "Images most not exceed 8"},status = 400)
         
-        images :Images = [Images.objects.create(image = img,user = request.user) for img in request.FILES.values()]
+        images :Images = [Images.objects.create(image = img,user = request.user) for img in serializer.validated_data.get("images")]
 
         
         
@@ -59,10 +59,27 @@ class UserGalaryController(C_APIView):
         galary :UserGalary = UserGalary.objects.create(**data,user = request.user)
         galary.images.set(images)
         galary.save()
-
+        
         return MakeResponse(serializer.data)
     
     def delete(self, request :HttpRequest,id = None, *args : list ,**kwargs :dict):
+        if request.GET.get("only_images"):
+            queryset :UserGalary = UserGalary.objects.filter(user = request.user)
+            obj :UserGalary = get_object_or_404(queryset, id = id)
+            image_index :int = request.data.get("image_index")
+            
+            if not image_index:
+                return MakeResponse({"error":"Invalid image index or index was not sent"})
+            
+            images = obj.images.all()
+            try:
+                images[int(image_index) - 1].delete()
+            except Exception as e:
+                return MakeResponse({"error":str(e)})
+            
+            return MakeResponse({"success":True})
+            
+
         queryset :UserGalary = UserGalary.objects.filter(user = request.user)
         obj :UserGalary = get_object_or_404(queryset,id = id)
         [x.delete() for x in obj.get_image_list()]
@@ -71,11 +88,13 @@ class UserGalaryController(C_APIView):
 
 
     def put(self, request :HttpRequest, id = None, *args :list, **kwargs :dict):
+        queryset :UserGalary = UserGalary.objects.filter(user = request.user)
+        obj :UserGalary = get_object_or_404(queryset,id = id)
+
+
         serializer :Serializer = UserGalaryUpdateSerializer(data = request.data)
         if not serializer.is_valid():
             return MakeResponse(serializer.errors,status=400)
-        queryset :UserGalary = UserGalary.objects.filter(user = request.user)
-        obj :UserGalary = get_object_or_404(queryset,id = id)
         data :dict = {
             "title" : serializer.validated_data.get("title",obj.title),
             "description" : serializer.validated_data.get("description",obj.description),
@@ -85,6 +104,9 @@ class UserGalaryController(C_APIView):
         }
         for key,value in data.items():
             setattr(obj,key,value)
+
+        #FIXME : Should not not delete all gallery image on update, rather update by id
+        
         if len(request.FILES) > 0:
             [x.delete() for x in obj.get_image_list()]
             images :Images = [Images.objects.create(image = img,user = request.user) for img in request.FILES.values()]

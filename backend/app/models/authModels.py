@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models,transaction
 from django.contrib.auth.models import AbstractBaseUser 
 
 from datetime import datetime
@@ -42,6 +42,9 @@ class AuthUserModel(AbstractBaseUser):
 
     account_id :str = models.CharField(max_length=160, null=True)
 
+    refrsh_token :str = models.CharField(max_length=960, null=True)
+
+
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
     
@@ -77,6 +80,4 @@ class AuthUserModel(AbstractBaseUser):
     class Meta:
         db_table:str = 'Users'
         app_label:str = "app"
-
-
 
